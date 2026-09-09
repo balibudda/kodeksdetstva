@@ -113,6 +113,19 @@ function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = []
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+   (function(m,e,t,r,i,k,a){
+       m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+   })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112437788', 'ym');
+
+   ym(112437788, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/112437788" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 <title>${esc(title)}</title>
 <meta name="description" content="${attr(description)}">
 <link rel="canonical" href="${attr(canonical)}">
@@ -256,15 +269,20 @@ function renderHome() {
   </div>
   <p class="hero-flag"><span class="ic">🚩</span> Внутри тем помечены <b>красные флаги</b> — сигналы, при которых нельзя ждать: дальше может быть очень плохо.</p>
 </section>
+<section class="home-search-box" aria-label="Поиск по ситуации">
+  <h2>🔎 Найдите свою ситуацию</h2>
+  <p>Опишите простыми словами, что случилось — поиск подберёт подходящие темы.</p>
+  <form class="search-form home-search" role="search" onsubmit="return false">
+    <input type="search" id="q" name="q" placeholder="«травят в школе», «не хочет жить», «забрал второй родитель»…" autocomplete="off">
+  </form>
+  <ul id="results" class="search-results" aria-live="polite"></ul>
+</section>
+<h2 class="sec-h">Разделы</h2>
 <nav class="sec-nav" aria-label="Быстрый переход по разделам">
   ${SECTIONS.map(
     (s) => `<a class="sec-chip" href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="sec-chip-i" aria-hidden="true">${s.icon}</span><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
   ).join('')}
 </nav>
-<form class="search-form home-search" role="search" onsubmit="return false">
-  <input type="search" id="q" name="q" placeholder="Опишите, что случилось: «травят в школе», «не хочет жить»…" autocomplete="off">
-</form>
-<ul id="results" class="search-results" aria-live="polite"></ul>
 <h2 class="sec-h">Разделы — подробно</h2>
 <ul class="sec-list">${sectionsHtml}</ul>
 <script src="/assets/search.js${V}" defer></script>
