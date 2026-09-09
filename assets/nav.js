@@ -128,10 +128,14 @@
           paint()
           return
         }
-        // подсказка по IP
+        // подсказка по IP — не чаще одного раза на браузер, тихо при ошибке
         paint()
+        var geoDone = false
+        try { geoDone = localStorage.getItem('cog_geo_done') === '1' } catch (e) {}
+        if (geoDone) return
+        try { localStorage.setItem('cog_geo_done', '1') } catch (e) {}
         fetch('/api/geo')
-          .then(function (r) { return r.json() })
+          .then(function (r) { return r.ok ? r.json() : null })
           .then(function (g) {
             if (!g || g.country !== 'RU') return
             var byCode = REGIONS.filter(function (r) { return r.id === g.region })[0]

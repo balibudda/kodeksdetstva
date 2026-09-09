@@ -733,6 +733,8 @@ function buildSitemap(urls) {
 const ROBOTS = `User-agent: *
 Allow: /
 Disallow: /poisk/
+Disallow: /moe/
+Disallow: /api/
 
 Sitemap: ${SITE.origin}/sitemap.xml
 `
