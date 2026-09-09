@@ -48,7 +48,7 @@
 - [x] Локальная папка `~/WebstormProjects/Nick/childofgod` → `~/WebstormProjects/Nick/kodeksdetstva`; проект WebStorm (`.idea`) переименован (Нику — переоткрыть проект по новому пути).
 - [x] Vercel-проект переименован в `kodeksdetstva` (Ник; `kodeksdetstva.vercel.app` работает). Домен `kodeksdetstva.ru` подключён и работает. Предупреждение про OpenID Connect в Vercel не про нас — игнорировать.
 - [ ] **Ника:** в Vercel сделать `kodeksdetstva.ru` primary + редирект с `childofgod.ru`/старого `.vercel.app`. Поднять ящик `info@kodeksdetstva.ru`.
-- [ ] **GitHub:** переименовать репозиторий `balibudda/childofgod` → `balibudda/kodeksdetstva` (Settings → Repository name). После этого локально: `git -C ~/WebstormProjects/Nick/kodeksdetstva remote set-url origin git@github.com:balibudda/kodeksdetstva.git`. GitHub держит редирект со старого имени, Vercel git-интеграция подхватит.
+- [x] **GitHub:** репозиторий переименован в `github.com/balibudda/kodeksdetstva`; локальный `git remote` обновлён; fetch/push работают. GitHub держит редирект со старого имени.
 
 ## Telegram Mini App
 

@@ -185,7 +185,7 @@ webview. Статический сайт для этого подходит да
 
 ## 6. Инфраструктура
 
-- Репозиторий: `github.com/balibudda/childofgod`
+- Репозиторий: `github.com/balibudda/kodeksdetstva`
 - Хостинг: Vercel, team «Bali Budda's projects»
 - Домен: `kodeksdetstva.ru` (утверждён 09.2026; переехали с `childofgod.ru`)
 - appId для Capacitor (план): `ru.kodeksdetstva.app`

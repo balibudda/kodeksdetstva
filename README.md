@@ -61,7 +61,7 @@ npm run dev       # build + serve
 
 | Что            | Где                                     |
 | -------------- | --------------------------------------- |
-| Репозиторий    | github.com/balibudda/childofgod         |
+| Репозиторий    | github.com/balibudda/kodeksdetstva         |
 | Хостинг        | Vercel (team «Bali Budda's projects»)   |
 | Домен          | kodeksdetstva.ru                        |
 
