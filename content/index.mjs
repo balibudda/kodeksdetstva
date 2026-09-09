@@ -11,6 +11,7 @@ import { TOPICS_CIFRA } from './topics/cifra.mjs'
 import { TOPICS_TRAVLYA } from './topics/travlya.mjs'
 import { TOPICS_PRAVA_SHKOLA } from './topics/prava-shkola.mjs'
 import { TOPICS_PODROSTOK_ZAKON } from './topics/podrostok-i-zakon.mjs'
+import { TOPICS_VOSPITANIE } from './topics/vospitanie.mjs'
 import { TOPICS_PSIHIKA } from './topics/psihika.mjs'
 import { TOPICS_ZDOROVIE } from './topics/zdorovie.mjs'
 import { TOPICS_PERVAYA_LYUBOV } from './topics/pervaya-lyubov.mjs'
@@ -25,6 +26,7 @@ export const TOPICS = [
   ...TOPICS_TRAVLYA,
   ...TOPICS_PRAVA_SHKOLA,
   ...TOPICS_PODROSTOK_ZAKON,
+  ...TOPICS_VOSPITANIE,
   ...TOPICS_PSIHIKA,
   ...TOPICS_ZDOROVIE,
   ...TOPICS_PERVAYA_LYUBOV,

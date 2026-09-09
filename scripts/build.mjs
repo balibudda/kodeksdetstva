@@ -120,8 +120,13 @@ ${ld}
 <body class="${bodyClass}">
 <a class="skip" href="#main">К содержанию</a>
 <header class="site-head">
-  <a class="logo" href="/">${esc(SITE.name)}</a>
-  <a class="help-btn" href="/pomoshch/">🆘 Помощь сейчас</a>
+  <div class="head-inner">
+    <a class="logo" href="/"><img class="logo-mark" src="/favicon.svg" alt="" width="24" height="24"><span>${esc(SITE.name)}</span></a>
+    <div class="head-actions">
+      <button type="button" class="reload-btn" data-reload aria-label="Обновить страницу и сбросить кэш" title="Обновить: сбросить кэш и перезагрузить эту страницу">↻</button>
+      <a class="help-btn" href="/pomoshch/">🆘 Помощь сейчас</a>
+    </div>
+  </div>
 </header>
 <main id="main">
 ${main}
