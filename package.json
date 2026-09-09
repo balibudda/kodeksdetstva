@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Дитя Бога — справочник для родителей: права ребёнка, безопасность, насилие и травля, психика, здоровье, закон. Многостраничный статический сайт: одна проблема — одна HTML-страница.",
   "scripts": {
-    "build": "node scripts/build.mjs",
+    "icons": "node scripts/gen-icons.mjs",
+    "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
     "serve": "node scripts/serve.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs"
   }

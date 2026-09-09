@@ -114,6 +114,8 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
 <meta name="apple-mobile-web-app-title" content="${attr(SITE.name)}">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/styles.css">
 ${ld}
 </head>
@@ -317,6 +319,13 @@ function renderTopic(t) {
       </section>`
     : ''
 
+  const ages = t.ages && t.ages.length
+    ? `<section class="tblock ages">
+        <h2><span class="ic" aria-hidden="true">👧</span> По возрастам</h2>
+        <dl>${t.ages.map((a) => `<dt>${esc(a.range)}</dt><dd>${esc(a.text)}</dd>`).join('')}</dl>
+      </section>`
+    : ''
+
   const contacts = t.contacts && t.contacts.length
     ? `<section class="tblock contacts" id="kuda-obratitsya">
         <h2><span class="ic" aria-hidden="true">📞</span> Куда обратиться</h2>
@@ -355,6 +364,7 @@ ${breadcrumbs(crumbs)}
   ${block('✅', 'Что делать: по шагам', t.steps, { ordered: true, cls: 'steps' })}
   ${block('🗣', 'Что можно сказать', t.say, { cls: 'say' })}
   ${block('⛔', 'Чего не говорить и не делать', t.dont, { cls: 'dont' })}
+  ${ages}
   ${templates}
   ${contacts}
   ${sources}
@@ -580,9 +590,9 @@ const MANIFEST = JSON.stringify({
   background_color: '#faf7f0',
   theme_color: '#3a6b5f',
   icons: [
-    { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-    { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-    { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+    { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+    { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
   ],
 })
 
