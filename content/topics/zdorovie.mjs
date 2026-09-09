@@ -387,7 +387,7 @@ export const TOPICS_ZDOROVIE = [
       'ФЗ «Об основах охраны здоровья граждан в РФ», ст. 20, 54, 56; Семейный кодекс РФ, ст. 62; УК РФ, ст. 134.',
       'Сроки «дней тишины» и социальных показаний сверить с действующей редакцией и приказами Минздрава перед публикацией.',
     ],
-    related: ['podrostkovaya-kontratseptsiya', 'suicidalnye-signaly', 'toksichnye-otnosheniya', 'rannie-otnosheniya-i-zakon'],
+    related: ['podrostkovaya-kontratseptsiya', 'suicidalnye-signaly', 'toksichnye-otnosheniya', 'rannie-otnosheniya-i-zakon', 'kodeks-detstva-iniciativa'],
   },
 
   {
