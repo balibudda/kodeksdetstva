@@ -259,6 +259,16 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 .teen-box .big-tel { display: inline-block; font-size: 18px; font-weight: 800; margin: 4px 0 8px; }
 .teen-links { display: grid; gap: 8px; margin-top: 8px; }
 .teen-links a { display: block; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 10px 13px; text-decoration: none; color: var(--ink); font-weight: 600; }
+/* регион */
+.region-box { background: var(--surface-2); border-radius: var(--radius); padding: 14px 16px; margin: 0 0 22px; }
+.region-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.region-label { font-size: 15px; }
+.region-label b { color: var(--accent); }
+.region-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.region-picker .sec-chip { cursor: pointer; border: 1px solid var(--line); font-weight: 600; }
+.region-picker .sec-chip:hover { border-color: var(--accent); color: var(--accent); }
+#region-contacts { margin-top: 12px; }
+#region-contacts .contact-list { margin-top: 8px; }
 .tblock { margin: 22px 0; }
 .tblock ul, .tblock ol { padding-left: 22px; margin: 8px 0; }
 .tblock li { margin: 7px 0; }

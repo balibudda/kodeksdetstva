@@ -17,6 +17,10 @@
     {
       "source": "/search-index.json",
       "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    },
+    {
+      "source": "/regions.json",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
     }
   ]
 }

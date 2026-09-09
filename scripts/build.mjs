@@ -12,6 +12,7 @@ import {
   SECTIONS_BY_ID,
   CONTACTS,
   CONTACTS_BY_ID,
+  REGIONS,
   TOPICS,
   TOPICS_BY_SLUG,
   topicUrl,
@@ -153,6 +154,7 @@ ${ld}
           <li><a href="/pomoshch/">🆘 Помощь сейчас</a></li>
           <li><a href="/kontakty/">📞 Все контакты</a></li>
           <li><a href="/poisk/">🔎 Поиск по ситуации</a></li>
+          <li><a href="/regiony/">📍 Регионы</a></li>
           <li><a href="/moe/">⭐ Моё (закладки и история)</a></li>
           <li><a href="/o-proekte/">О проекте</a></li>
         </ul>
@@ -175,6 +177,7 @@ ${main}
     <a href="/kontakty/">Все контакты</a>
     <a href="/poisk/">Поиск</a>
     <a href="/moe/">Моё</a>
+    <a href="/regiony/">Регионы</a>
     <a href="/o-proekte/">О проекте</a>
   </nav>
   <div class="foot-contacts">
@@ -535,15 +538,67 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Все конта�
 <h1>Все контакты: куда звонить, писать и обращаться</h1>
 <p class="frame">Телефоны кликабельны — нажмите, чтобы позвонить. Адреса почты открываются в почтовом приложении, сайты — в новой вкладке.
 Часть номеров помечена значком ⚠️ — их нужно сверить с официальным сайтом перед использованием.</p>
-${sections}`
+
+<section class="region-box" id="region-box">
+  <div class="region-bar">
+    <span class="region-label">Ваш регион: <b id="region-name">определяем…</b></span>
+    <button type="button" class="ta-btn" id="region-change">сменить</button>
+  </div>
+  <div id="region-picker" class="region-picker" hidden></div>
+  <div id="region-contacts"></div>
+  <p class="foot-disclaimer">Кроме федеральных линий, у регионов есть свои: уполномоченный по правам ребёнка, кризисные центры, выплаты. Полный список регионов — на странице <a href="/regiony/">«Регионы»</a>. Регион можно определить по IP или выбрать вручную; выбор хранится только в этом браузере.</p>
+</section>
+
+${sections}
+<script src="/assets/nav.js${V}" defer></script>`
 
   return layout({
     title: `Все контакты помощи детям и родителям — ${SITE.name}`,
     description:
-      'Справочник служб: экстренные телефоны, горячие линии, государственные органы (МВД, СК, ФСБ, прокуратура, Роскомнадзор, Роспотребнадзор, уполномоченный по правам ребёнка), НКО. Кликабельные телефоны и ссылки.',
+      'Справочник служб: экстренные телефоны, горячие линии, государственные органы (МВД, СК, ФСБ, прокуратура, Роскомнадзор, Роспотребнадзор, уполномоченный по правам ребёнка), НКО, региональные контакты. Кликабельные телефоны и ссылки.',
     canonicalPath: '/kontakty/',
     bodyClass: 'page-contacts',
     jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Все контакты', url: '/kontakty/' }])],
+    main,
+  })
+}
+
+function regionContactHtml(c) {
+  const acts = []
+  if (c.tel) acts.push(`<a class="c-act c-tel" href="${attr(telHref(c.tel))}">☎ ${esc(c.telDisplay || c.tel)}</a>`)
+  if (c.site) acts.push(`<a class="c-act c-site" href="${attr(c.site)}" target="_blank" rel="noopener noreferrer">🔗 ${esc(c.siteDisplay || c.site)}</a>`)
+  return `<li class="contact">
+    <div class="contact-name">${esc(c.name)}</div>
+    <div class="contact-when"><b>Когда обращаться:</b> ${esc(c.when)}</div>
+    ${acts.length ? `<div class="contact-actions">${acts.join('')}</div>` : ''}
+    ${c.verify ? '<div class="contact-verify">⚠️ Контакт нужно сверить с официальным сайтом.</div>' : ''}
+  </li>`
+}
+
+function renderRegiony() {
+  const list = REGIONS.map(
+    (r) => `<section class="tblock contacts" id="reg-${r.id}">
+      <h2>${esc(r.name)}</h2>
+      ${r.note ? `<p class="frame">${esc(r.note)}</p>` : ''}
+      <p class="rf-note">Детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> работает и здесь — круглосуточно, бесплатно, анонимно.</p>
+      <ul class="contact-list">${r.contacts.map(regionContactHtml).join('')}</ul>
+    </section>`,
+  ).join('')
+
+  const main = `
+${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Регионы', url: '/regiony/' }])}
+<h1>Региональные контакты: города-миллионники, Москва и Московская область</h1>
+<p class="frame">Кроме федеральных линий и фондов, у каждого региона есть свой уполномоченный по правам ребёнка, комиссии, кризисные центры и меры поддержки семей. Ниже — как их найти по вашему региону. Данные наполняются постепенно; помеченные ⚠️ контакты сверяйте с официальными сайтами.</p>
+<nav class="sec-nav">${REGIONS.map((r) => `<a class="sec-chip" href="#reg-${r.id}">${esc(r.tag)}</a>`).join('')}</nav>
+${list}`
+
+  return layout({
+    title: `Региональные контакты помощи детям — уполномоченные, кризисные центры — ${SITE.name}`,
+    description:
+      'Куда обращаться в вашем регионе: уполномоченный по правам ребёнка, КДН и опека, кризисные центры, региональные меры поддержки семей. Москва, Московская область, Санкт-Петербург и города-миллионники.',
+    canonicalPath: '/regiony/',
+    bodyClass: 'page-regiony',
+    jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Регионы', url: '/regiony/' }])],
     main,
   })
 }
@@ -727,14 +782,19 @@ async function main() {
   routes.push(await writePage('/o-proekte/', renderAbout()))
   routes.push(await writePage('/poisk/', renderSearch()))
   routes.push(await writePage('/moe/', renderMoe()))
-
+  routes.push(await writePage('/regiony/', renderRegiony()))
   for (const s of SECTIONS) routes.push(await writePage(sectionUrl(s), renderSection(s)))
   for (const t of TOPICS) routes.push(await writePage(topicUrl(t), renderTopic(t)))
 
   await writeFile(path.join(DIST, '404.html'), render404(), 'utf8')
 
-  // индекс поиска, sitemap, robots, manifest
+  // индекс поиска, регионы, sitemap, robots, manifest
   await writeFile(path.join(DIST, 'search-index.json'), JSON.stringify(buildSearchIndex()), 'utf8')
+  await writeFile(
+    path.join(DIST, 'regions.json'),
+    JSON.stringify(REGIONS.map((r) => ({ id: r.id, name: r.name, tag: r.tag, cities: r.cities, contacts: r.contacts }))),
+    'utf8',
+  )
   const indexable = routes.filter((r) => r !== "/poisk/" && r !== "/moe/")
   await writeFile(path.join(DIST, 'sitemap.xml'), buildSitemap(indexable), 'utf8')
   await writeFile(path.join(DIST, 'robots.txt'), ROBOTS, 'utf8')
@@ -753,6 +813,7 @@ async function main() {
     '/assets/search.js' + V,
     '/assets/nav.js' + V,
     '/search-index.json',
+    '/regions.json',
     '/favicon.svg',
     '/manifest.webmanifest',
     '/404.html',

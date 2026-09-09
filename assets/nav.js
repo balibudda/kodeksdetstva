@@ -51,6 +51,103 @@
     }
   })
 
+  // ── Регион: выбор вручную или подсказка по IP (через /api/geo) ──
+  var regionBox = document.getElementById('region-box')
+  if (regionBox) {
+    var R_KEY = 'cog_region'
+    var nameEl = document.getElementById('region-name')
+    var listEl = document.getElementById('region-contacts')
+    var pickerEl = document.getElementById('region-picker')
+    var changeBtn = document.getElementById('region-change')
+    var REGIONS = []
+    var current = null
+
+    function esc2(s) {
+      return (s || '').replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+      })
+    }
+    function telHref2(t) { return 'tel:' + String(t).replace(/[^\d+]/g, '') }
+
+    function renderContacts(r) {
+      if (!r) {
+        listEl.innerHTML =
+          '<p class="foot-disclaimer">Регион не выбран — показаны только федеральные линии выше. Нажмите «сменить», чтобы выбрать регион и увидеть местные контакты.</p>'
+        return
+      }
+      var items = (r.contacts || []).map(function (c) {
+        var acts = []
+        if (c.tel) acts.push('<a class="c-act c-tel" href="' + telHref2(c.tel) + '">☎ ' + esc2(c.telDisplay || c.tel) + '</a>')
+        if (c.site) acts.push('<a class="c-act c-site" href="' + esc2(c.site) + '" target="_blank" rel="noopener noreferrer">🔗 ' + esc2(c.siteDisplay || c.site) + '</a>')
+        return '<li class="contact"><div class="contact-name">' + esc2(c.name) + '</div>' +
+          '<div class="contact-when"><b>Когда обращаться:</b> ' + esc2(c.when) + '</div>' +
+          (acts.length ? '<div class="contact-actions">' + acts.join('') + '</div>' : '') +
+          (c.verify ? '<div class="contact-verify">⚠️ Контакт нужно сверить с официальным сайтом.</div>' : '') +
+          '</li>'
+      })
+      listEl.innerHTML =
+        '<p class="rf-note">Детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> работает и здесь.</p>' +
+        '<ul class="contact-list">' + items.join('') + '</ul>'
+    }
+
+    function paint() {
+      nameEl.textContent = current ? current.name : 'не выбран (только федеральные)'
+      renderContacts(current)
+    }
+
+    function setRegion(id) {
+      try { id ? localStorage.setItem(R_KEY, id) : localStorage.removeItem(R_KEY) } catch (e) {}
+      current = REGIONS.filter(function (r) { return r.id === id })[0] || null
+      paint()
+      pickerEl.hidden = true
+    }
+
+    function buildPicker() {
+      pickerEl.innerHTML =
+        '<button type="button" class="sec-chip" data-region="">Вся Россия (только федеральные)</button>' +
+        REGIONS.map(function (r) {
+          return '<button type="button" class="sec-chip" data-region="' + r.id + '">' + esc2(r.tag) + '</button>'
+        }).join('')
+      pickerEl.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-region]')
+        if (b) setRegion(b.getAttribute('data-region'))
+      })
+    }
+
+    changeBtn.addEventListener('click', function () { pickerEl.hidden = !pickerEl.hidden })
+
+    fetch('/regions.json')
+      .then(function (r) { return r.json() })
+      .then(function (data) {
+        REGIONS = data
+        buildPicker()
+        var stored = null
+        try { stored = localStorage.getItem(R_KEY) } catch (e) {}
+        if (stored !== null) {
+          current = REGIONS.filter(function (r) { return r.id === stored })[0] || null
+          paint()
+          return
+        }
+        // подсказка по IP
+        paint()
+        fetch('/api/geo')
+          .then(function (r) { return r.json() })
+          .then(function (g) {
+            if (!g || g.country !== 'RU') return
+            var byCode = REGIONS.filter(function (r) { return r.id === g.region })[0]
+            var city = (g.city || '').toLowerCase()
+            var byCity = byCode || REGIONS.filter(function (r) {
+              return (r.cities || []).some(function (c) { return city && (c === city || city.indexOf(c) !== -1) })
+            })[0]
+            if (byCity) { setRegion(byCity.id) }
+          })
+          .catch(function () {})
+      })
+      .catch(function () {
+        nameEl.textContent = 'не удалось загрузить'
+      })
+  }
+
   // ── Закладки, история просмотров, «поделиться» — всё локально (localStorage) ──
   var BM_KEY = 'cog_bm'
   var HIST_KEY = 'cog_hist'

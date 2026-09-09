@@ -2,6 +2,7 @@
 
 import { SECTIONS, SECTIONS_BY_ID } from './sections.mjs'
 import { CONTACTS, CONTACTS_BY_ID } from './contacts.mjs'
+import { REGIONS, REGIONS_BY_ID } from './regions.mjs'
 
 import { TOPICS_LICHNOST } from './topics/lichnost.mjs'
 import { TOPICS_SEMYA } from './topics/semya.mjs'
@@ -62,4 +63,4 @@ export function validateContent() {
   return errors
 }
 
-export { SECTIONS, SECTIONS_BY_ID, CONTACTS, CONTACTS_BY_ID }
+export { SECTIONS, SECTIONS_BY_ID, CONTACTS, CONTACTS_BY_ID, REGIONS, REGIONS_BY_ID }
