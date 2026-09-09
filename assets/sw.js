@@ -1,6 +1,11 @@
-// Service worker: офлайн-доступ ко всему сайту.
+// Service worker: полностью офлайн-доступ ко всему сайту.
 // Список precache подставляется при сборке (scripts/build.mjs).
-var CACHE = 'childofgod-v1'
+//
+// Стратегия — cache-first ВЕЗДЕ, включая переходы между страницами: в стрессовой
+// ситуации и при плохой связи приложение обязано открыться мгновенно и никогда
+// не «висеть» в ожидании сети. Сеть используется только для фонового обновления
+// и как запасной вариант, если страницы нет в кэше.
+var CACHE = 'childofgod-v2'
 var PRECACHE = /*__PRECACHE__*/ []
 
 self.addEventListener('install', function (e) {
@@ -23,41 +28,46 @@ self.addEventListener('activate', function (e) {
   self.clients.claim()
 })
 
+function bgUpdate(req) {
+  // тихо обновляем кэш из сети, не блокируя ответ
+  fetch(req)
+    .then(function (res) {
+      if (res && res.ok) {
+        var copy = res.clone()
+        caches.open(CACHE).then(function (c) { c.put(req, copy) })
+      }
+    })
+    .catch(function () {})
+}
+
 self.addEventListener('fetch', function (e) {
   var req = e.request
   if (req.method !== 'GET') return
   var url = new URL(req.url)
   if (url.origin !== location.origin) return
 
-  // навигация: сначала сеть, при офлайне — кэш, затем офлайн-страница
-  if (req.mode === 'navigate') {
-    e.respondWith(
-      fetch(req)
+  e.respondWith(
+    caches.match(req, { ignoreSearch: req.mode === 'navigate' }).then(function (cached) {
+      if (cached) {
+        bgUpdate(req)
+        return cached
+      }
+      return fetch(req)
         .then(function (res) {
-          var copy = res.clone()
-          caches.open(CACHE).then(function (c) { c.put(req, copy) })
+          if (res && res.ok) {
+            var copy = res.clone()
+            caches.open(CACHE).then(function (c) { c.put(req, copy) })
+          }
           return res
         })
         .catch(function () {
-          return caches.match(req).then(function (m) {
-            return m || caches.match('/404.html') || caches.match('/')
-          })
-        }),
-    )
-    return
-  }
-
-  // остальное: сначала кэш, затем сеть
-  e.respondWith(
-    caches.match(req).then(function (m) {
-      return (
-        m ||
-        fetch(req).then(function (res) {
-          var copy = res.clone()
-          caches.open(CACHE).then(function (c) { c.put(req, copy) })
-          return res
+          if (req.mode === 'navigate') {
+            return caches.match('/').then(function (home) {
+              return home || caches.match('/404.html')
+            })
+          }
+          return new Response('', { status: 504, statusText: 'offline' })
         })
-      )
     }),
   )
 })
