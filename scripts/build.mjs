@@ -805,7 +805,7 @@ function renderPolitika() {
   const main = `
 ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Политика обработки персональных данных', url: '/politika/' }])}
 <h1>Политика в отношении обработки персональных данных</h1>
-<p class="frame">Действует для сайта <b>kodeksdetstva.ru</b> и его версии в виде Telegram-мини-приложения. Последнее обновление: ${esc(BUILD_MONTH)}</p>
+<p class="frame">Действует для сайта <b>kodeksdetstva.ru</b> и его версии в виде Telegram-мини-приложения (<a href="https://t.me/kodeksdetstva_bot" target="_blank" rel="noopener noreferrer">@kodeksdetstva_bot</a>). Последнее обновление: ${esc(BUILD_MONTH)}</p>
 
 <h2>1. Общие положения</h2>
 <p>Настоящая Политика определяет порядок обработки персональных данных и меры по обеспечению их безопасности на сайте
