@@ -659,7 +659,10 @@ async function main() {
   // service worker с актуальным списком precache
   const swSrc = await readFile(path.join(ROOT, 'assets', 'sw.js'), 'utf8')
   const precache = [...routes, '/assets/styles.css', '/assets/search.js', '/assets/nav.js', '/search-index.json', '/favicon.svg', '/manifest.webmanifest', '/404.html']
-  const sw = swSrc.replace('/*__PRECACHE__*/', JSON.stringify(precache))
+  const buildId = String(Date.now())
+  const sw = swSrc
+    .replace('/*__PRECACHE__*/', JSON.stringify(precache))
+    .replace('/*__BUILD__*/', buildId)
   await writeFile(path.join(DIST, 'sw.js'), sw, 'utf8')
 
   console.log(`Готово: ${routes.length} страниц, ${TOPICS.length} тем в ${SECTIONS.length} разделах, ${CONTACTS.length} контактов.`)

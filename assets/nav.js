@@ -70,8 +70,20 @@
   })
 
   if ('serviceWorker' in navigator) {
+    var hadController = !!navigator.serviceWorker.controller
+    var reloadedForSW = false
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      // новый service worker взял управление после обновления — один раз
+      // перезагружаем страницу, чтобы подхватить свежие файлы.
+      // На первой установке (контроллера ещё не было) не перезагружаем.
+      if (!hadController || reloadedForSW) return
+      reloadedForSW = true
+      location.reload()
+    })
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js').catch(function () {})
+      navigator.serviceWorker.register('/sw.js').then(function (reg) {
+        if (reg && reg.update) reg.update()
+      }).catch(function () {})
     })
   }
 
