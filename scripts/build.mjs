@@ -215,8 +215,14 @@ function breadcrumbLd(items) {
 function renderHome() {
   const sectionsHtml = SECTIONS.map(
     (s) => `<li class="sec-card" style="--sec:${s.accent}">
-      <a href="${sectionUrl(s)}"><span class="sec-title"><span class="sec-emoji" aria-hidden="true">${s.icon}</span> ${esc(s.title)}</span>
-      <span class="sec-lead">${esc(s.lead)}</span></a>
+      <a class="sec-card-head" href="${sectionUrl(s)}">
+        <span class="sec-card-txt">
+          <span class="sec-title"><span class="sec-emoji" aria-hidden="true">${s.icon}</span> ${esc(s.title)}</span>
+          <span class="sec-lead">${esc(s.lead)}</span>
+          <span class="sec-open">Все темы раздела (${topicsOfSection(s.id).length}) →</span>
+        </span>
+        <span class="tc-go" aria-hidden="true">›</span>
+      </a>
       <ul class="sec-topics">${topicsOfSection(s.id)
         .slice(0, 6)
         .map((t) => `<li><a href="${topicUrl(t)}">${esc(t.title)}</a>${t.urgent ? ' <b class="u">срочное</b>' : ''}</li>`)
@@ -282,11 +288,14 @@ function renderSection(s) {
     .map(
       (t) => `<li class="topic-card${t.urgent ? ' is-urgent' : ''}">
       <a href="${topicUrl(t)}">
-        <span class="tc-title">${esc(t.title)}</span>
-        <span class="tc-desc">${esc(t.seoDescription)}</span>
-        <span class="tc-meta">${t.urgent ? '<b class="u">срочная тема</b> · ' : ''}${
+        <span class="tc-body">
+          <span class="tc-title">${esc(t.title)}</span>
+          <span class="tc-desc">${esc(t.seoDescription)}</span>
+          <span class="tc-meta">${t.urgent ? '<b class="u">срочная тема</b> · ' : ''}${
         t.status === 'planned' ? 'кратко, дополняется' : 'полный разбор'
-      }</span>
+      } · <span class="tc-open">открыть →</span></span>
+        </span>
+        <span class="tc-go" aria-hidden="true">›</span>
       </a>
     </li>`,
     )
