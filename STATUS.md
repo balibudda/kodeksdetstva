@@ -47,7 +47,7 @@
 - [x] Фавикон: убран крестик на фигуре (ассоциация с «Дитя Бога»), заменён на «строки кодекса».
 - [x] Локальная папка `~/WebstormProjects/Nick/childofgod` → `~/WebstormProjects/Nick/kodeksdetstva`; проект WebStorm (`.idea`) переименован (Нику — переоткрыть проект по новому пути).
 - [x] Vercel-проект переименован в `kodeksdetstva` (Ник; `kodeksdetstva.vercel.app` работает). Домен `kodeksdetstva.ru` подключён и работает. Предупреждение про OpenID Connect в Vercel не про нас — игнорировать.
-- [ ] **Ника:** в Vercel сделать `kodeksdetstva.ru` primary + редирект с `childofgod.ru`/старого `.vercel.app`. Поднять ящик `info@kodeksdetstva.ru`.
+- [x] `kodeksdetstva.ru` — primary, отдаёт 200. `childofgod.ru` сейчас 404 (Ник, видимо, отвязал старый домен — если хотел редирект, добавить обратно в проект с Redirect to `kodeksdetstva.ru`).
 - [x] **GitHub:** репозиторий переименован в `github.com/balibudda/kodeksdetstva`; локальный `git remote` обновлён; fetch/push работают. GitHub держит редирект со старого имени.
 
 ## Telegram Mini App
@@ -57,7 +57,7 @@
 - [x] Интеграционный слой `assets/tg.js` (грузится на всех страницах, активен только внутри Telegram): `ready()`/`expand()`, тема Telegram → наши CSS-переменные, кнопка «Назад» Telegram, deep-link `?startapp=psihika__suicidalnye-signaly` → переход на тему, внешние ссылки через `tg.openLink`, haptic. Плюс `telegram-web-app.js` в `<head>` (async) и правки CSS `html[data-tg]`.
 - [x] **Бот `@kodeksdetstva_bot` запущен.** Вебхук-функция `api/tg.js` (в том же проекте), задеплоена. `/start` (+ deep-link payload), `/help`, фолбэк — везде inline-кнопки `web_app`: открыть приложение, «Помощь сейчас», «Тебе». Кнопка меню бота («Открыть») настроена через `setChatMenuButton`. Секреты в Vercel env (Production): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` (сверяется с заголовком `X-Telegram-Bot-Api-Secret-Token`). Токен бота — в `~/Desktop/sync.py` («Bot tg kodeks»).
 - [x] Оформление бота через Bot API: имя «Кодекс детства», описание (экран пустого чата), краткое описание (профиль), команды `/start` и `/help`.
-- [ ] **Аватар бота** — файл `public/icons/icon-512.png` передан Нику; загрузить через @BotFather → `/setuserpic` (Bot API метода нет).
+- [x] **Аватар бота** — загружен Ником через @BotFather.
 - [ ] BotFather — необязательно: `/newapp` для прямой ссылки `t.me/kodeksdetstva_bot/app`.
 - [ ] Мини-апп обновляется автоматически при каждом деплое — отдельных действий не требует.
 - [ ] Инлайн-поиск в боте (найти тему прямо в чате) — v2.
