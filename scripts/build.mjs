@@ -113,18 +113,21 @@ function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = []
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- Yandex.Metrika counter -->
+<!-- Yandex.Metrika counter (загружается только после согласия на cookies) -->
 <script type="text/javascript">
-   (function(m,e,t,r,i,k,a){
-       m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-       m[i].l=1*new Date();
-       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-   })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112437788', 'ym');
-
-   ym(112437788, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  window.kdLoadMetrika = function () {
+    if (window.__kdMetrikaLoaded) return;
+    window.__kdMetrikaLoaded = true;
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112437788', 'ym');
+    ym(112437788, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  };
+  try { if (localStorage.getItem('kd_cookie_consent') === '1') window.kdLoadMetrika(); } catch (e) {}
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/112437788" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
 <title>${esc(title)}</title>
 <meta name="description" content="${attr(description)}">
@@ -172,6 +175,7 @@ ${ld}
           <li><a href="/regiony/">📍 Регионы</a></li>
           <li><a href="/moe/">⭐ Моё (закладки и история)</a></li>
           <li><a href="/o-proekte/">О проекте</a></li>
+          <li><a href="/politika/">Политика обработки данных</a></li>
         </ul>
       </nav>
     </details>
@@ -204,7 +208,36 @@ ${main}
   <p class="foot-disclaimer"><span class="age-mark">18+</span> Справочно-просветительские материалы для родителей и подростков; не пропаганда и не инструктаж.
   Не заменяют консультацию юриста, врача или психолога. Ссылки на нормы даны для ориентира и требуют проверки на актуальность.
   Правовой статус и маркировка — на странице <a href="/o-proekte/">«О проекте»</a>. В острой ситуации сразу обращайтесь за живой помощью.</p>
+  <p class="foot-disclaimer">Независимый проект. Не является государственным ресурсом и не связан с органами власти или с законодательной инициативой о «Кодексе детства».
+  <a href="/politika/">Политика обработки персональных данных</a>.</p>
 </footer>
+<div class="cookie-bar" id="cookie-bar" hidden>
+  <p>Мы используем cookies и сервис Яндекс.Метрика, чтобы понимать, как люди пользуются справочником, и делать его удобнее. Подробнее — в <a href="/politika/">Политике обработки персональных данных</a>.</p>
+  <div class="cookie-actions">
+    <button type="button" id="cookie-accept" class="btn">Принять</button>
+    <button type="button" id="cookie-decline" class="btn btn-ghost">Только необходимые</button>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = 'kd_cookie_consent';
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) {}
+  var bar = document.getElementById('cookie-bar');
+  if (!bar) return;
+  if (stored === '1' || stored === '0') { bar.hidden = true; return; }
+  bar.hidden = false;
+  function decide(v) {
+    try { localStorage.setItem(KEY, v); } catch (e) {}
+    bar.hidden = true;
+    if (v === '1' && typeof window.kdLoadMetrika === 'function') window.kdLoadMetrika();
+  }
+  var a = document.getElementById('cookie-accept');
+  var d = document.getElementById('cookie-decline');
+  if (a) a.addEventListener('click', function () { decide('1'); });
+  if (d) d.addEventListener('click', function () { decide('0'); });
+})();
+</script>
 <script src="/assets/nav.js${V}" defer></script>
 <script src="/assets/tg.js${V}" defer></script>
 </body>
@@ -746,7 +779,16 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'О проекте'
 независимо от маркировки — начни со страницы <a href="/tebe/">«Тебе»</a> или позвони на детский телефон доверия
 <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a>.</p>
 <p>Если материал показался вам нарушающим закон или содержащим неточность — напишите на
-<a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a>, мы разберёмся и поправим.</p>`
+<a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a>, мы разберёмся и поправим.</p>
+<h2>Независимость</h2>
+<p>«${esc(SITE.name)}» — независимый общественный проект. Он не является государственным ресурсом, не связан с органами
+власти и не имеет отношения к обсуждаемой в Госдуме законодательной инициативе о «Кодексе детства». Совпадение названия
+не означает никакой связи. Материалы готовятся на основе открытых источников и действующего законодательства.</p>
+<h2>Данные и приватность</h2>
+<p>Сайт использует cookies и сервис веб-аналитики Яндекс.Метрика, чтобы понимать, как посетители пользуются справочником.
+Аналитика подключается только после вашего согласия (кнопка в нижней плашке). Что именно собирается и зачем —
+в <a href="/politika/">Политике обработки персональных данных</a>. Формы заявлений заполняются прямо в браузере и
+никуда не отправляются; закладки и история хранятся только в вашем устройстве.</p>`
 
   return layout({
     title: `О проекте — ${SITE.name}`,
@@ -755,6 +797,85 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'О проекте'
     canonicalPath: '/o-proekte/',
     bodyClass: 'page-about',
     jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'О проекте', url: '/o-proekte/' }])],
+    main,
+  })
+}
+
+function renderPolitika() {
+  const main = `
+${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Политика обработки персональных данных', url: '/politika/' }])}
+<h1>Политика в отношении обработки персональных данных</h1>
+<p class="frame">Действует для сайта <b>kodeksdetstva.ru</b> и его версии в виде Telegram-мини-приложения. Последнее обновление: ${esc(BUILD_MONTH)}</p>
+
+<h2>1. Общие положения</h2>
+<p>Настоящая Политика определяет порядок обработки персональных данных и меры по обеспечению их безопасности на сайте
+kodeksdetstva.ru (далее — Сайт) в соответствии с Федеральным законом от 27.07.2006 № 152-ФЗ «О персональных данных».
+Оператором обработки данных является владелец Сайта (далее — Оператор). Связь с Оператором:
+<a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a>.</p>
+<p>Используя Сайт, посетитель подтверждает согласие с настоящей Политикой. При несогласии использование Сайта следует прекратить.</p>
+
+<h2>2. Какие данные обрабатываются</h2>
+<p>Оператор не собирает данные, позволяющие прямо идентифицировать личность, и не запрашивает у посетителей имя, телефон,
+адрес и иные подобные сведения. Обрабатываются обезличенные технические данные, которые автоматически передаёт браузер:</p>
+<ul>
+  <li>IP-адрес, тип и версия браузера и операционной системы, язык, разрешение экрана;</li>
+  <li>адрес страницы Сайта и адрес страницы-источника перехода (referrer);</li>
+  <li>дата и время визита, действия на страницах (клики, прокрутка, переходы), в том числе запись сессии средствами Яндекс.Метрики (Вебвизор);</li>
+  <li>файлы cookie и идентификаторы, которые сервис веб-аналитики использует для различения визитов.</li>
+</ul>
+<p>Данные, которые посетитель вводит в формы заявлений на Сайте, обрабатываются исключительно в браузере посетителя,
+на сервер Оператора не передаются и Оператору недоступны. Закладки и история просмотров хранятся только в браузере
+посетителя (localStorage) и никуда не отправляются.</p>
+
+<h2>3. Цели обработки</h2>
+<ul>
+  <li>анализ посещаемости и поведения посетителей для улучшения содержания и удобства Сайта;</li>
+  <li>выявление технических ошибок и проблем отображения;</li>
+  <li>обеспечение работоспособности и безопасности Сайта (в том числе защита от автоматизированных запросов).</li>
+</ul>
+
+<h2>4. Правовые основания</h2>
+<p>Обработка ведётся на основании согласия посетителя, выражаемого путём нажатия кнопки «Принять» в информационной
+плашке о cookie, а также на основании законных интересов Оператора по обеспечению работы Сайта. До получения согласия
+сервис веб-аналитики не загружается.</p>
+
+<h2>5. Использование cookie и веб-аналитики</h2>
+<p>Сайт использует сервис <b>Яндекс.Метрика</b>, предоставляемый ООО «ЯНДЕКС». Сервис использует cookie и технологию
+Вебвизор (запись действий на странице в обезличенном виде). Условия обработки данных Яндекс.Метрикой —
+на сайте Яндекса (<a href="https://yandex.ru/legal/metrica_agreement/" target="_blank" rel="noopener noreferrer">yandex.ru/legal/metrica_agreement</a>).
+Отключить сбор можно, нажав «Только необходимые» в плашке, либо запретив cookie и включив режим «Не отслеживать» в браузере,
+либо установив блокировщик Яндекс.Метрики.</p>
+
+<h2>6. Передача данных третьим лицам</h2>
+<p>Оператор не продаёт и не передаёт собранные данные третьим лицам, кроме передачи обезличенных данных сервису
+Яндекс.Метрика как обработчику в описанных выше целях. Данные могут быть предоставлены государственным органам
+по законному требованию.</p>
+
+<h2>7. Сроки хранения</h2>
+<p>Обезличенные данные веб-аналитики хранятся в течение срока, установленного сервисом Яндекс.Метрика. Значения в
+localStorage (согласие, закладки, история, выбранный регион) хранятся в браузере посетителя до их удаления посетителем.</p>
+
+<h2>8. Права посетителя</h2>
+<p>Посетитель вправе отозвать согласие на обработку (нажав «Только необходимые» или очистив данные сайта в браузере),
+получить информацию об обработке своих данных и обратиться с жалобой в Роскомнадзор. Вопросы и обращения —
+на <a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a>.</p>
+
+<h2>9. Дети</h2>
+<p>Сайт носит справочно-просветительский характер и адресован в том числе несовершеннолетним. Оператор не собирает у
+посетителей сведений, позволяющих их идентифицировать, и не ведёт профилей пользователей. Возрастная маркировка и
+правовой статус материалов — на странице <a href="/o-proekte/">«О проекте»</a>.</p>
+
+<h2>10. Изменения</h2>
+<p>Оператор вправе изменять настоящую Политику. Актуальная редакция всегда доступна по адресу kodeksdetstva.ru/politika/.
+Дата последнего обновления указана в начале страницы.</p>`
+
+  return layout({
+    title: `Политика обработки персональных данных — ${SITE.name}`,
+    description:
+      'Как сайт «Кодекс детства» обрабатывает данные: cookie и Яндекс.Метрика только после согласия, никакой идентификации личности, формы заполняются в браузере.',
+    canonicalPath: '/politika/',
+    bodyClass: 'page-politika',
+    jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Политика обработки персональных данных', url: '/politika/' }])],
     main,
   })
 }
@@ -901,6 +1022,7 @@ async function main() {
   routes.push(await writePage('/tebe/', renderTebe()))
   routes.push(await writePage('/kontakty/', renderKontakty()))
   routes.push(await writePage('/o-proekte/', renderAbout()))
+  routes.push(await writePage('/politika/', renderPolitika()))
   routes.push(await writePage('/poisk/', renderSearch()))
   routes.push(await writePage('/moe/', renderMoe()))
   routes.push(await writePage('/regiony/', renderRegiony()))
