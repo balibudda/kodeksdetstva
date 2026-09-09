@@ -108,6 +108,31 @@ h2 { font-size: 19px; margin: 24px 0 10px; }
 .btn { display: inline-block; text-decoration: none; font-weight: 700; padding: 11px 16px; border-radius: 999px; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
 .btn-danger { background: var(--danger); color: #fff; border-color: transparent; }
 .hero-flag { margin-top: 14px; font-size: 14.5px; color: var(--ink-soft); }
+
+/* быстрый индекс разделов */
+.sec-nav {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 18px 0 6px;
+}
+.sec-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  text-decoration: none;
+  font-size: 14px; font-weight: 600; line-height: 1;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line);
+}
+.sec-chip:hover { border-color: var(--accent); color: var(--accent); }
+.sec-chip-n {
+  font-size: 12px; font-weight: 700;
+  color: var(--ink-soft);
+  background: var(--surface-2);
+  border-radius: 999px;
+  min-width: 20px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+}
 .sec-h { margin-top: 26px; }
 .sec-list, .topic-list, .contact-list, .quick-links, .search-results { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 12px; }
 .sec-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }

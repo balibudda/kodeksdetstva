@@ -196,7 +196,12 @@ function renderHome() {
   </div>
   <p class="hero-flag"><span class="ic">🚩</span> Внутри тем помечены <b>красные флаги</b> — сигналы, при которых нельзя ждать: дальше может быть очень плохо.</p>
 </section>
-<h2 class="sec-h">Разделы</h2>
+<nav class="sec-nav" aria-label="Быстрый переход по разделам">
+  ${SECTIONS.map(
+    (s) => `<a class="sec-chip" href="${sectionUrl(s)}"><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
+  ).join('')}
+</nav>
+<h2 class="sec-h">Разделы — подробно</h2>
 <ul class="sec-list">${sectionsHtml}</ul>
 <section class="resp-note">
   <h2>Кто за что отвечает</h2>
