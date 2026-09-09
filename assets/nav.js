@@ -1,5 +1,16 @@
-// Мелкие улучшения: копирование и скачивание шаблонов документов + service worker.
+// Мелкие улучшения: меню, копирование и скачивание шаблонов, service worker.
 (function () {
+  // Меню разделов: закрывать по клику вне и по Esc
+  var menu = document.getElementById('menu')
+  if (menu) {
+    document.addEventListener('click', function (e) {
+      if (menu.open && !menu.contains(e.target)) menu.open = false
+    })
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.open) menu.open = false
+    })
+  }
+
   function tplBody(btn) {
     var box = btn.closest('.tpl')
     return box ? box.querySelector('.tpl-body') : null

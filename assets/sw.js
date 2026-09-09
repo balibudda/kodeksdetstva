@@ -1,18 +1,19 @@
 // Service worker: полностью офлайн-доступ ко всему сайту.
 // Список precache подставляется при сборке (scripts/build.mjs).
 //
-// Стратегия — cache-first ВЕЗДЕ, включая переходы между страницами: в стрессовой
-// ситуации и при плохой связи приложение обязано открыться мгновенно и никогда
-// не «висеть» в ожидании сети. Сеть используется только для фонового обновления
-// и как запасной вариант, если страницы нет в кэше.
+// Стратегии:
+//  • Переходы между страницами (navigate) — сеть с коротким тайм-аутом, при
+//    неудаче мгновенно из кэша. Так контент свежий при связи и не «висит» без неё.
+//  • Статика (CSS/JS/иконки) — cache-first: она версионируется (?v=<buildId>),
+//    поэтому из кэша всегда свежая, а грузится мгновенно.
 var CACHE = 'childofgod-' + '/*__BUILD__*/'
 var PRECACHE = /*__PRECACHE__*/ []
+var NET_TIMEOUT = 3000
 
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
-      // cache: 'reload' — тянем из сети мимо HTTP-кэша браузера, чтобы новый
-      // service worker не закешировал устаревшие файлы
+      // cache: 'reload' — мимо HTTP-кэша браузера, чтобы не закешировать старое
       return Promise.all(
         PRECACHE.map(function (u) {
           return fetch(new Request(u, { cache: 'reload' }))
@@ -36,16 +37,12 @@ self.addEventListener('activate', function (e) {
   self.clients.claim()
 })
 
-function bgUpdate(req) {
-  // тихо обновляем кэш из сети (мимо HTTP-кэша), не блокируя ответ
-  fetch(new Request(req.url, { cache: 'reload' }))
-    .then(function (res) {
-      if (res && res.ok) {
-        var copy = res.clone()
-        caches.open(CACHE).then(function (c) { c.put(req, copy) })
-      }
-    })
-    .catch(function () {})
+function putInCache(req, res) {
+  if (res && res.ok && res.type === 'basic') {
+    var copy = res.clone()
+    caches.open(CACHE).then(function (c) { c.put(req, copy) })
+  }
+  return res
 }
 
 self.addEventListener('fetch', function (e) {
@@ -54,28 +51,47 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url)
   if (url.origin !== location.origin) return
 
-  e.respondWith(
-    caches.match(req, { ignoreSearch: req.mode === 'navigate' }).then(function (cached) {
-      if (cached) {
-        bgUpdate(req)
-        return cached
-      }
-      return fetch(req)
-        .then(function (res) {
-          if (res && res.ok) {
-            var copy = res.clone()
-            caches.open(CACHE).then(function (c) { c.put(req, copy) })
-          }
-          return res
-        })
-        .catch(function () {
-          if (req.mode === 'navigate') {
-            return caches.match('/').then(function (home) {
-              return home || caches.match('/404.html')
+  // ── Переходы между страницами: network-first с тайм-аутом ──
+  if (req.mode === 'navigate') {
+    e.respondWith(
+      new Promise(function (resolve) {
+        var done = false
+        var timer = setTimeout(function () {
+          if (done) return
+          done = true
+          caches.match(req, { ignoreSearch: true }).then(function (c) {
+            resolve(c || caches.match('/') || caches.match('/404.html'))
+          })
+        }, NET_TIMEOUT)
+
+        fetch(req)
+          .then(function (res) {
+            if (done) { putInCache(req, res); return }
+            done = true
+            clearTimeout(timer)
+            putInCache(req, res.clone())
+            resolve(res)
+          })
+          .catch(function () {
+            if (done) return
+            done = true
+            clearTimeout(timer)
+            caches.match(req, { ignoreSearch: true }).then(function (c) {
+              resolve(c || caches.match('/') || caches.match('/404.html'))
             })
-          }
-          return new Response('', { status: 504, statusText: 'offline' })
-        })
+          })
+      }),
+    )
+    return
+  }
+
+  // ── Всё остальное: cache-first ──
+  e.respondWith(
+    caches.match(req).then(function (cached) {
+      if (cached) return cached
+      return fetch(req)
+        .then(function (res) { return putInCache(req, res) })
+        .catch(function () { return new Response('', { status: 504, statusText: 'offline' }) })
     }),
   )
 })

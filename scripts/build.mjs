@@ -134,6 +134,26 @@ ${ld}
 <a class="skip" href="#main">К содержанию</a>
 <header class="site-head">
   <div class="head-inner">
+    <details class="menu" id="menu">
+      <summary class="menu-btn" aria-label="Меню разделов">☰</summary>
+      <nav class="menu-panel" aria-label="Разделы">
+        <a class="menu-home" href="/">На главную</a>
+        <p class="menu-h">Разделы</p>
+        <ul>
+          ${SECTIONS.map(
+            (s) =>
+              `<li><a href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="menu-i" aria-hidden="true">${s.icon}</span> ${esc(s.title)} <b>${topicsOfSection(s.id).length}</b></a></li>`,
+          ).join('')}
+        </ul>
+        <p class="menu-h">Ещё</p>
+        <ul>
+          <li><a href="/pomoshch/">🆘 Помощь сейчас</a></li>
+          <li><a href="/kontakty/">📞 Все контакты</a></li>
+          <li><a href="/poisk/">🔎 Поиск по ситуации</a></li>
+          <li><a href="/o-proekte/">О проекте</a></li>
+        </ul>
+      </nav>
+    </details>
     <a class="logo" href="/"><img class="logo-mark" src="/favicon.svg" alt="" width="24" height="24"><span>${esc(SITE.name)}</span></a>
     <div class="head-actions">
       <button type="button" class="reload-btn" data-reload aria-label="Обновить страницу и сбросить кэш" title="Обновить: сбросить кэш и перезагрузить эту страницу">↻</button>
