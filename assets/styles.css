@@ -195,6 +195,10 @@ h2 { font-size: 19px; margin: 24px 0 10px; }
 
 /* search */
 .search-form input { width: 100%; font: inherit; font-size: 17px; padding: 13px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.search-form input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.home-search { margin: 8px 0 4px; }
+.page-home .search-results:empty { display: none; }
+.page-home .search-results { margin-top: 8px; }
 .search-results li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .search-results a { display: block; text-decoration: none; color: var(--ink); padding: 12px 14px; }
 .search-results .r-title { font-weight: 700; }

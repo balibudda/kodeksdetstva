@@ -201,8 +201,13 @@ function renderHome() {
     (s) => `<a class="sec-chip" href="${sectionUrl(s)}"><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
   ).join('')}
 </nav>
+<form class="search-form home-search" role="search" onsubmit="return false">
+  <input type="search" id="q" name="q" placeholder="Опишите, что случилось: «травят в школе», «не хочет жить»…" autocomplete="off">
+</form>
+<ul id="results" class="search-results" aria-live="polite"></ul>
 <h2 class="sec-h">Разделы — подробно</h2>
 <ul class="sec-list">${sectionsHtml}</ul>
+<script src="/assets/search.js" defer></script>
 <section class="resp-note">
   <h2>Кто за что отвечает</h2>
   <p>Безопасность и счастье ребёнка — прежде всего зона ответственности родителя. Государство и его органы помогают в своих пределах: полиция и Следственный комитет — по преступлениям, опека и КДН — по защите детей, надзорные органы — по нарушениям учреждений. Ниже — <a href="/kontakty/">полный справочник служб</a> с кликабельными телефонами и ссылками.</p>
