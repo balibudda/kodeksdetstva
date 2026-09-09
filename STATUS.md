@@ -47,7 +47,7 @@
 - [x] Фавикон: убран крестик на фигуре (ассоциация с «Дитя Бога»), заменён на «строки кодекса».
 - [x] Локальная папка `~/WebstormProjects/Nick/childofgod` → `~/WebstormProjects/Nick/kodeksdetstva`; проект WebStorm (`.idea`) переименован (Нику — переоткрыть проект по новому пути).
 - [x] Vercel-проект переименован в `kodeksdetstva` (Ник; `kodeksdetstva.vercel.app` работает). Домен `kodeksdetstva.ru` подключён и работает. Предупреждение про OpenID Connect в Vercel не про нас — игнорировать.
-- [x] `kodeksdetstva.ru` — primary, отдаёт 200. `childofgod.ru` сейчас 404 (Ник, видимо, отвязал старый домен — если хотел редирект, добавить обратно в проект с Redirect to `kodeksdetstva.ru`).
+- [x] `kodeksdetstva.ru` — primary, отдаёт 200. `childofgod.ru` Ник удалил намеренно (домен никто не видел, редирект не нужен).
 - [x] **GitHub:** репозиторий переименован в `github.com/balibudda/kodeksdetstva`; локальный `git remote` обновлён; fetch/push работают. GitHub держит редирект со старого имени.
 
 ## Telegram Mini App
