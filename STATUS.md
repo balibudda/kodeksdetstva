@@ -58,7 +58,7 @@
 - [x] **Бот `@kodeksdetstva_bot` запущен.** Вебхук-функция `api/tg.js` (в том же проекте), задеплоена. `/start` (+ deep-link payload), `/help`, фолбэк — везде inline-кнопки `web_app`: открыть приложение, «Помощь сейчас», «Тебе». Кнопка меню бота («Открыть») настроена через `setChatMenuButton`. Секреты в Vercel env (Production): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` (сверяется с заголовком `X-Telegram-Bot-Api-Secret-Token`). Токен бота — в `~/Desktop/sync.py` («Bot tg kodeks»).
 - [x] Оформление бота через Bot API: имя «Кодекс детства», описание (экран пустого чата), краткое описание (профиль), команды `/start` и `/help`.
 - [x] **Аватар бота** — загружен Ником через @BotFather.
-- [ ] BotFather — необязательно: `/newapp` для прямой ссылки `t.me/kodeksdetstva_bot/app`.
+- [x] Named Mini App через `/newapp` — прямая ссылка **`t.me/kodeksdetstva_bot/kdbot`** (открывает приложение сразу на весь экран). Баннер 640×360 — `public/tg-app-banner.png` (генератор `scripts/gen-tg-banner.mjs`). Ссылка добавлена в подвал сайта («📱 Открыть в Telegram», скрыта в режиме мини-аппа) и на `/politika/`.
 - [x] **Инлайн-поиск в боте** — `@kodeksdetstva_bot <запрос>` в любом чате → до 20 подсказок по темам (индекс из `/search-index.json`, кэш 10 мин). Пустой запрос → подборка входных точек. Свободный текст боту в личке → топ-5 тем ссылками. `inline_query` добавлен в `allowed_updates` вебхука.
 - [x] Инлайн-режим включён в @BotFather (`supports_inline_queries: true`). Работает.
 - [ ] MAX (VK) — аналогично, позже.

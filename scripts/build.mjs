@@ -203,6 +203,7 @@ ${main}
   <div class="foot-contacts">
     <p class="foot-c-title">Связаться с нами</p>
     <p><a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a> — вопросы, предложения, неточности в материалах.</p>
+    <p class="foot-tg"><a href="https://t.me/kodeksdetstva_bot/kdbot" target="_blank" rel="noopener noreferrer">📱 Открыть в Telegram</a> — та же справка в виде мини-приложения.</p>
     <p class="foot-c-help">Срочная помощь ребёнку: <a href="tel:112">112</a> · детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> (круглосуточно, бесплатно). Больше — на странице <a href="/pomoshch/">«Помощь сейчас»</a>.</p>
   </div>
   <p class="foot-disclaimer"><span class="age-mark">18+</span> Справочно-просветительские материалы для родителей и подростков; не пропаганда и не инструктаж.
@@ -805,7 +806,7 @@ function renderPolitika() {
   const main = `
 ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Политика обработки персональных данных', url: '/politika/' }])}
 <h1>Политика в отношении обработки персональных данных</h1>
-<p class="frame">Действует для сайта <b>kodeksdetstva.ru</b> и его версии в виде Telegram-мини-приложения (<a href="https://t.me/kodeksdetstva_bot" target="_blank" rel="noopener noreferrer">@kodeksdetstva_bot</a>). Последнее обновление: ${esc(BUILD_MONTH)}</p>
+<p class="frame">Действует для сайта <b>kodeksdetstva.ru</b> и его версии в виде Telegram-мини-приложения (<a href="https://t.me/kodeksdetstva_bot/kdbot" target="_blank" rel="noopener noreferrer">t.me/kodeksdetstva_bot/kdbot</a>). Последнее обновление: ${esc(BUILD_MONTH)}</p>
 
 <h2>1. Общие положения</h2>
 <p>Настоящая Политика определяет порядок обработки персональных данных и меры по обеспечению их безопасности на сайте
