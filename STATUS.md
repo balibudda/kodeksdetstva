@@ -45,8 +45,19 @@
 
 - [x] Переименование в коде: `SITE.name` / `SITE.origin` в `build.mjs`, зашитый текст в `renderAbout`, `MANIFEST` (name/short_name), комментарий в `build.mjs`, `sw.js` (префикс кэша `kodeksdetstva-`), `package.json`, `README.md`, `CONCEPT.md`, `info@childofgod.ru` → `info@kodeksdetstva.ru`.
 - [x] Фавикон: убран крестик на фигуре (ассоциация с «Дитя Бога»), заменён на «строки кодекса».
-- [ ] **Ника:** в Vercel сделать `kodeksdetstva.ru` primary + 308-редирект с `childofgod.ru`/`.vercel.app`. Поднять ящик `info@kodeksdetstva.ru`.
-- Репозиторий и Vercel-проект оставлены как `childofgod` — переименовывать не обязательно.
+- [x] Локальная папка `~/WebstormProjects/Nick/childofgod` → `~/WebstormProjects/Nick/kodeksdetstva`; проект WebStorm (`.idea`) переименован (Нику — переоткрыть проект по новому пути).
+- [x] Vercel-проект переименован в `kodeksdetstva` (Ник; `kodeksdetstva.vercel.app` работает). Домен `kodeksdetstva.ru` подключён и работает. Предупреждение про OpenID Connect в Vercel не про нас — игнорировать.
+- [ ] **Ника:** в Vercel сделать `kodeksdetstva.ru` primary + редирект с `childofgod.ru`/старого `.vercel.app`. Поднять ящик `info@kodeksdetstva.ru`.
+- [ ] **GitHub:** переименовать репозиторий `balibudda/childofgod` → `balibudda/kodeksdetstva` (Settings → Repository name). После этого локально: `git -C ~/WebstormProjects/Nick/kodeksdetstva remote set-url origin git@github.com:balibudda/kodeksdetstva.git`. GitHub держит редирект со старого имени, Vercel git-интеграция подхватит.
+
+## Telegram Mini App
+
+Подход: тот же `dist/` работает и как сайт, и как мини-приложение. **Обновляется автоматически** при каждом деплое — отдельной пересборки/публикации не нужно (в отличие от APK).
+
+- [x] Интеграционный слой `assets/tg.js` (грузится на всех страницах, активен только внутри Telegram): `ready()`/`expand()`, тема Telegram → наши CSS-переменные, кнопка «Назад» Telegram, deep-link `?startapp=psihika__suicidalnye-signaly` → переход на тему, внешние ссылки через `tg.openLink`, haptic. Плюс `telegram-web-app.js` в `<head>` (async) и правки CSS `html[data-tg]`.
+- [ ] **Нужно от Ника:** создать бота через @BotFather → **токен** (в Vercel env `TELEGRAM_BOT_TOKEN`, не в git); имя бота; в BotFather задать Mini App URL = `https://kodeksdetstva.ru`; решить — минимум (кнопка «Открыть») или полный (deep-links на темы + инлайн-поиск).
+- [ ] Бот-лаунчер: серверлес-функция `api/tg.js` в этом же проекте (webhook) — `/start` с web_app-кнопкой, обработка deep-link `startapp`. Добавлю, когда будет токен.
+- [ ] MAX (VK) — аналогично, позже.
 
 Почему выбрали: веское брендовое звучание, семантически точное (свод норм о детях), `.ru` без чёрточки свободен, под поиск работает; совпадение с думской инициативой «Кодекс детства» — плюс для трафика (тему разбираем нейтрально в `kodeks-detstva-iniciativa`). Отклонены: «Дитя Бога» (слово «Бог»), «Проект Дитя», «Дитя России».
 

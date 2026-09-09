@@ -132,6 +132,7 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/styles.css${V}">
+<script async src="https://telegram.org/js/telegram-web-app.js"></script>
 ${ld}
 </head>
 <body class="${bodyClass}"${accent ? ` style="--sec:${accent}"` : ''}${dataAttrs}>
@@ -192,6 +193,7 @@ ${main}
   Правовой статус и маркировка — на странице <a href="/o-proekte/">«О проекте»</a>. В острой ситуации сразу обращайтесь за живой помощью.</p>
 </footer>
 <script src="/assets/nav.js${V}" defer></script>
+<script src="/assets/tg.js${V}" defer></script>
 </body>
 </html>`
 }
@@ -913,6 +915,7 @@ async function main() {
     '/assets/styles.css' + V,
     '/assets/search.js' + V,
     '/assets/nav.js' + V,
+    '/assets/tg.js' + V,
     '/search-index.json',
     '/regions.json',
     '/favicon.svg',
