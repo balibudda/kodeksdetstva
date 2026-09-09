@@ -1,4 +1,4 @@
-# Дитя Бога — концепт
+# Кодекс детства — концепт
 
 Документ описывает замысел, карту контента и технический план. Живёт в репозитории
 и обновляется по мере работы.
@@ -187,8 +187,8 @@ webview. Статический сайт для этого подходит да
 
 - Репозиторий: `github.com/balibudda/childofgod`
 - Хостинг: Vercel, team «Bali Budda's projects»
-- Домены: `childofgod.ru` (основной), `childofgod.app` (для сторов/бренда)
-- appId для Capacitor (план): `ru.childofgod.app`
+- Домен: `kodeksdetstva.ru` (утверждён 09.2026; переехали с `childofgod.ru`)
+- appId для Capacitor (план): `ru.kodeksdetstva.app`
 
 ---
 

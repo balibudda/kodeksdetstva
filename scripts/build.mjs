@@ -1,4 +1,4 @@
-// Генератор статического многостраничного сайта «Дитя Бога».
+// Генератор статического многостраничного сайта «Кодекс детства».
 // Одна тема — одна HTML-страница с точным URL. Всё офлайн, без бэкенда.
 // Результат в dist/ — его же потом бандлит Capacitor в APK/iOS.
 
@@ -26,8 +26,8 @@ const ROOT = path.join(__dirname, '..')
 const DIST = path.join(ROOT, 'dist')
 
 const SITE = {
-  origin: 'https://childofgod.ru',
-  name: 'Дитя Бога',
+  origin: 'https://kodeksdetstva.ru',
+  name: 'Кодекс детства',
   tagline: 'родителям и подросткам о правах, безопасности и помощи',
   description:
     'Справочник для родителей и подростков: права ребёнка простым языком, защита от насилия и травли, безопасность, психика, здоровье, закон. Что делать по шагам и куда обратиться. Работает офлайн.',
@@ -184,7 +184,7 @@ ${main}
   </nav>
   <div class="foot-contacts">
     <p class="foot-c-title">Связаться с нами</p>
-    <p><a href="mailto:info@childofgod.ru">info@childofgod.ru</a> — вопросы, предложения, неточности в материалах.</p>
+    <p><a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a> — вопросы, предложения, неточности в материалах.</p>
     <p class="foot-c-help">Срочная помощь ребёнку: <a href="tel:112">112</a> · детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> (круглосуточно, бесплатно). Больше — на странице <a href="/pomoshch/">«Помощь сейчас»</a>.</p>
   </div>
   <p class="foot-disclaimer"><span class="age-mark">18+</span> Справочно-просветительские материалы для родителей и подростков; не пропаганда и не инструктаж.
@@ -726,12 +726,12 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'О проекте'
 независимо от маркировки — начни со страницы <a href="/tebe/">«Тебе»</a> или позвони на детский телефон доверия
 <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a>.</p>
 <p>Если материал показался вам нарушающим закон или содержащим неточность — напишите на
-<a href="mailto:info@childofgod.ru">info@childofgod.ru</a>, мы разберёмся и поправим.</p>`
+<a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a>, мы разберёмся и поправим.</p>`
 
   return layout({
     title: `О проекте — ${SITE.name}`,
     description:
-      'Зачем нужен справочник «Дитя Бога», как устроена каждая страница и почему ответственность за безопасность ребёнка — прежде всего на семье.',
+      'Зачем нужен справочник «Кодекс детства», как устроена каждая страница и почему ответственность за безопасность ребёнка — прежде всего на семье.',
     canonicalPath: '/o-proekte/',
     bodyClass: 'page-about',
     jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'О проекте', url: '/o-proekte/' }])],
@@ -838,8 +838,8 @@ Sitemap: ${SITE.origin}/sitemap.xml
 `
 
 const MANIFEST = JSON.stringify({
-  name: 'Дитя Бога — права и безопасность ребёнка',
-  short_name: 'Дитя Бога',
+  name: 'Кодекс детства — права и безопасность ребёнка',
+  short_name: 'Кодекс детства',
   description: SITE.description,
   lang: 'ru',
   start_url: '/',

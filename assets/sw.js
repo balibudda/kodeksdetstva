@@ -6,7 +6,7 @@
 //    неудаче мгновенно из кэша. Так контент свежий при связи и не «висит» без неё.
 //  • Статика (CSS/JS/иконки) — cache-first: она версионируется (?v=<buildId>),
 //    поэтому из кэша всегда свежая, а грузится мгновенно.
-var CACHE = 'childofgod-' + '/*__BUILD__*/'
+var CACHE = 'kodeksdetstva-' + '/*__BUILD__*/'
 var PRECACHE = /*__PRECACHE__*/ []
 var NET_TIMEOUT = 3000
 
