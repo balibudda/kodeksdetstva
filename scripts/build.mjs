@@ -152,6 +152,7 @@ ${ld}
         <p class="menu-h">Ещё</p>
         <ul>
           <li><a href="/pomoshch/">🆘 Помощь сейчас</a></li>
+          <li><a href="/tebe/">🧒 Тебе (подростку)</a></li>
           <li><a href="/kontakty/">📞 Все контакты</a></li>
           <li><a href="/poisk/">🔎 Поиск по ситуации</a></li>
           <li><a href="/regiony/">📍 Регионы</a></li>
@@ -174,6 +175,7 @@ ${main}
   <nav class="foot-nav">
     <a href="/">Главная</a>
     <a href="/pomoshch/">Помощь сейчас</a>
+    <a href="/tebe/">Тебе</a>
     <a href="/kontakty/">Все контакты</a>
     <a href="/poisk/">Поиск</a>
     <a href="/moe/">Моё</a>
@@ -247,7 +249,7 @@ function renderHome() {
   <div class="hero-cta">
     <a class="btn btn-danger" href="/pomoshch/">🆘 Нужна помощь прямо сейчас</a>
     <a class="btn" href="/poisk/">🔎 Найти свою ситуацию</a>
-    <a class="btn" href="/pomoshch/#podrostku">🧒 Ты подросток? Тебе сюда</a>
+    <a class="btn" href="/tebe/">🧒 Ты подросток? Тебе сюда</a>
   </div>
   <p class="hero-flag"><span class="ic">🚩</span> Внутри тем помечены <b>красные флаги</b> — сигналы, при которых нельзя ждать: дальше может быть очень плохо.</p>
 </section>
@@ -366,17 +368,19 @@ function renderTopic(t) {
   const templates = t.templates && t.templates.length
     ? `<section class="tblock templates" id="dokumenty">
         <h2><span class="ic" aria-hidden="true">📄</span> Готовые документы</h2>
-        <p class="tpl-lead">Кнопки — сразу под названием: <b>⬇️ скачать файл</b> (откроется в Word) или <b>📋 скопировать текст</b>. Заполните поля в квадратных скобках, поставьте дату и подпись. Актуально на <b>${esc(BUILD_MONTH)}</b> — требования меняются, сверяйте с сайтом ведомства.</p>
+        <p class="tpl-lead">Кнопки — сразу под названием: <b>✏️ заполнить онлайн</b> (подставит ваши данные в текст прямо здесь), затем <b>⬇️ скачать файл</b> (откроется в Word) или <b>📋 скопировать текст</b>. Можно и просто заполнить поля в квадратных скобках вручную. Актуально на <b>${esc(BUILD_MONTH)}</b> — требования меняются, сверяйте с сайтом ведомства.</p>
         ${t.templates
           .map(
             (tpl, i) => `<article class="tpl">
             <h3 class="tpl-title"><span aria-hidden="true">📄</span> ${esc(tpl.title)}</h3>
             <div class="tpl-actions">
+              <button class="btn btn-fill" type="button" data-fill aria-expanded="false">✏️ Заполнить онлайн</button>
               <button class="btn btn-doc" type="button" data-doc data-name="${attr(t.slug + '-dok-' + (i + 1) + '.doc')}" data-doctitle="${attr(tpl.title)}">⬇️ Скачать .doc</button>
               <button class="btn btn-copy" type="button" data-copy>📋 Скопировать текст</button>
             </div>
             ${tpl.to ? `<p class="tpl-meta"><b>Кому:</b> ${esc(tpl.to)}</p>` : ''}
             ${tpl.where ? `<p class="tpl-meta"><b>Куда подать или принести:</b> ${esc(tpl.where)}</p>` : ''}
+            <div class="tpl-fill" data-fill-panel hidden></div>
             <pre class="tpl-body">${esc(tpl.body)}</pre>
             ${tpl.example ? `<details class="tpl-example"><summary><span aria-hidden="true">👀</span> Показать пример заполнения</summary><pre class="tpl-body tpl-body--example">${esc(tpl.example)}</pre></details>` : ''}
           </article>`,
@@ -488,6 +492,7 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Помощь се�
       .map((t) => `<a href="${topicUrl(t)}">${esc(t.title)}</a>`)
       .join('')}
   </div>
+  <p><a class="btn" href="/tebe/">🧒 Открыть страницу «Тебе» — все ситуации по разделам</a></p>
 </section>
 <section class="tblock contacts">
   <h2>Экстренные линии</h2>
@@ -512,6 +517,82 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Помощь се�
     canonicalPath: '/pomoshch/',
     bodyClass: 'page-help',
     jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Помощь сейчас', url: '/pomoshch/' }])],
+    main,
+  })
+}
+
+function renderTebe() {
+  const groups = [
+    ['Дома', 'Бьют, унижают, пьют, не замечают, дома невыносимо.', [
+      'rebenku-doma-nebezopasno', 'kak-vybratsya-iz-tyazheloy-semyi', 'zavisimosti-roditeley', 'nasilie-mezhdu-roditelyami', 'uhod-iz-doma',
+    ]],
+    ['В школе', 'Травят, придирается учитель, невыносимая нагрузка.', [
+      'travlya-rebenok-molchit', 'kiberbulling', 'travlya-uchitel', 'shkolnyy-stress', 'ekzameny-oge-ege', 'pobory-v-shkole',
+    ]],
+    ['В сети', 'Пишет взрослый, требуют фото, зовут на «лёгкие деньги».', [
+      'gruming-onlayn', 'sextortion', 'verbovka-legkie-dengi', 'destruktivnye-soobshchestva', 'finansovye-lovushki', 'privatnost-cifrovoy-sled',
+    ]],
+    ['Внутри тебя', 'Не хочется жить, срывы, режешь себя, еда, пустота, злость.', [
+      'suicidalnye-signaly', 'selfharm', 'depressiya-podrostka', 'rpp', 'strahi-i-trevozhnost', 'odinochestvo', 'mest-i-obida', 'gore-i-poterya',
+    ]],
+    ['Любовь, тело, отношения', 'Отвергли, в отношениях плохо, залёт, вопросы про тело.', [
+      'pervaya-lyubov-otverzhenie', 'toksichnye-otnosheniya', 'rannie-otnosheniya-i-zakon', 'podrostkovaya-kontratseptsiya', 'rannyaya-beremennost', 'telo-ves-vneshnost',
+    ]],
+    ['Полиция и закон', 'Задержали, вызвали на допрос, КДН, комендантский час, повестка.', [
+      'dopros-nesovershennoletnego', 'zaderzhanie-dosmotr', 'uchet-kdn', 'komendantskiy-chas', 'zakladki-veshchestva', 'prizyv-i-voenkomat',
+    ]],
+    ['Вещества и зависимости', 'Вейп, алкоголь в компании, ставки и игры затянули.', [
+      'veypy-nikotin', 'alkogol-i-kompanii', 'zavisimost-ot-igr-i-stavok', 'pochemu-tyanet-na-zapretnoe',
+    ]],
+    ['Если ты из детского дома', 'Скоро выпуск, документы, жильё, поиск родных, права в учреждении.', [
+      'vypusknik-detskogo-doma', 'rebenok-v-detskom-dome-prava', 'poisk-biologicheskih-roditeley',
+    ]],
+  ]
+
+  const groupsHtml = groups
+    .map(([title, lead, slugs]) => {
+      const cards = slugs
+        .map((slug) => TOPICS_BY_SLUG[slug])
+        .filter(Boolean)
+        .map((t) => `<li><a href="${topicUrl(t)}"><span class="tebe-c-t">${esc(t.title)}</span><span class="tc-go" aria-hidden="true">›</span></a></li>`)
+        .join('')
+      if (!cards) return ''
+      return `<section class="tebe-group">
+        <h3>${esc(title)}</h3>
+        <p class="tebe-g-lead">${esc(lead)}</p>
+        <ul class="tebe-cards">${cards}</ul>
+      </section>`
+    })
+    .join('')
+
+  const main = `
+${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Тебе', url: '/tebe/' }])}
+<h1>Тебе — если тяжело, страшно или несправедливо</h1>
+<p class="frame">Эта страница для тебя, подросток. Без нотаций и «сам виноват». Здесь коротко: что происходит, какие у тебя права и что можно сделать. Читать можно без интернета.</p>
+
+<section class="teen-box tebe-now">
+  <h2>Если прямо сейчас опасно</h2>
+  <p>Тебя бьют, душат, угрожают, ты ранен или не можешь оставаться там, где ты есть — звони:</p>
+  <a class="big-tel" href="tel:112">☎ 112</a>
+  <p>Не опасно прямо сейчас, но тяжело, страшно, не с кем поговорить:</p>
+  <a class="big-tel" href="tel:+78002000122">☎ 8 800 2000 122</a>
+  <p>Детский телефон доверия — <b>бесплатно, анонимно, круглосуточно</b>. Тебя не «сдадут»: можно просто рассказать и спросить, что делать. Звонок не видно в детализации у родителей.</p>
+</section>
+
+<h2 class="sec-h">Выбери, что происходит</h2>
+${groupsHtml}
+
+<section class="tblock">
+  <p>Не нашёл свою ситуацию? Попробуй <a href="/poisk/">поиск по сайту</a> или загляни в <a href="/kontakty/">список всех контактов</a>. Если решаешь, кому доверять из взрослых, — начни с того, кто тебя обычно не высмеивает: классный руководитель, школьный психолог, тренер, родитель друга, родственник.</p>
+</section>`
+
+  return layout({
+    title: `Тебе, подростку: что делать, если тяжело — ${SITE.name}`,
+    description:
+      'Страница для подростков: что делать, если бьют дома, травят в школе, шантажируют в сети, не хочется жить, проблемы с полицией или в отношениях. Права и телефоны помощи. Анонимно.',
+    canonicalPath: '/tebe/',
+    bodyClass: 'page-tebe',
+    jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Тебе', url: '/tebe/' }])],
     main,
   })
 }
@@ -781,6 +862,7 @@ async function main() {
   const routes = []
   routes.push(await writePage('/', renderHome()))
   routes.push(await writePage('/pomoshch/', renderPomoshch()))
+  routes.push(await writePage('/tebe/', renderTebe()))
   routes.push(await writePage('/kontakty/', renderKontakty()))
   routes.push(await writePage('/o-proekte/', renderAbout()))
   routes.push(await writePage('/poisk/', renderSearch()))

@@ -16,13 +16,100 @@
     return box ? box.querySelector('.tpl-body') : null
   }
 
+  // Текст шаблона для копирования/скачивания: заполненный, если онлайн-форма
+  // активна и в неё что-то ввели, иначе — исходный с полями в скобках.
+  function tplText(btn) {
+    var box = btn.closest('.tpl')
+    if (!box) return ''
+    var preview = box.querySelector('.tpl-preview')
+    var panel = box.querySelector('[data-fill-panel]')
+    if (preview && panel && !panel.hidden && box.querySelector('.tpl-fill input')) {
+      var any = false
+      var inputs = box.querySelectorAll('.tpl-fill input')
+      for (var i = 0; i < inputs.length; i++) { if (inputs[i].value.trim()) { any = true; break } }
+      if (any) return preview.innerText
+    }
+    var body = box.querySelector('.tpl-body')
+    return body ? body.innerText : ''
+  }
+
+  // ✏️ Заполнить онлайн: строим поля по «[...]» из текста шаблона,
+  // подставляем введённое в живой предпросмотр. Всё офлайн, ничего не отправляется.
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-fill]')
+    if (!btn) return
+    var box = btn.closest('.tpl')
+    if (!box) return
+    var panel = box.querySelector('[data-fill-panel]')
+    var srcPre = box.querySelector('.tpl-body')
+    if (!panel || !srcPre) return
+
+    if (!panel.hidden) {
+      panel.hidden = true
+      btn.setAttribute('aria-expanded', 'false')
+      btn.textContent = '✏️ Заполнить онлайн'
+      return
+    }
+
+    if (!panel.dataset.built) {
+      var src = srcPre.innerText
+      var seen = {}
+      var fields = []
+      src.replace(/\[[^\]\n]{2,120}\]/g, function (m) {
+        if (!seen[m]) { seen[m] = true; fields.push(m) }
+        return m
+      })
+      if (!fields.length) {
+        panel.innerHTML = '<p class="tpl-fill-note">В этом шаблоне нет полей для подстановки — просто скачайте или скопируйте текст.</p>'
+        panel.dataset.built = '1'
+      } else {
+        var rows = fields.map(function (f, i) {
+          var label = f.replace(/^\[|\]$/g, '')
+          return '<label class="tpl-fld"><span>' + escHtml(label) + '</span>' +
+            '<input type="text" data-ph="' + escAttr(f) + '" autocomplete="off"></label>'
+        }).join('')
+        panel.innerHTML =
+          '<p class="tpl-fill-note">Заполните поля — текст ниже обновится сам. Данные остаются только в этом браузере.</p>' +
+          '<div class="tpl-flds">' + rows + '</div>' +
+          '<p class="tpl-fill-note">Предпросмотр:</p>' +
+          '<pre class="tpl-preview"></pre>'
+        panel.dataset.built = '1'
+        var preview = panel.querySelector('.tpl-preview')
+        var srcText = src
+        var inputs = panel.querySelectorAll('input[data-ph]')
+        var repaint = function () {
+          var out = srcText
+          for (var i = 0; i < inputs.length; i++) {
+            var ph = inputs[i].getAttribute('data-ph')
+            var val = inputs[i].value.trim()
+            if (val) out = out.split(ph).join(val)
+          }
+          preview.textContent = out
+        }
+        for (var i = 0; i < inputs.length; i++) inputs[i].addEventListener('input', repaint)
+        repaint()
+      }
+    }
+
+    panel.hidden = false
+    btn.setAttribute('aria-expanded', 'true')
+    btn.textContent = '✏️ Свернуть форму'
+  })
+
+  function escHtml(s) {
+    return (s || '').replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+    })
+  }
+  function escAttr(s) { return escHtml(s).replace(/'/g, '&#39;') }
+
   // 📋 Копировать текст шаблона
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-copy]')
     if (!btn) return
     var pre = tplBody(btn)
     if (!pre) return
-    var text = pre.innerText
+    var text = tplText(btn)
     var label = btn.textContent
     var done = function () {
       btn.textContent = 'Скопировано ✓'
@@ -38,16 +125,18 @@
       fallback()
     }
     function fallback() {
-      var r = document.createRange()
-      r.selectNodeContents(pre)
-      var sel = window.getSelection()
-      sel.removeAllRanges()
-      sel.addRange(r)
+      var ta = document.createElement('textarea')
+      ta.value = text
+      ta.setAttribute('readonly', '')
+      ta.style.position = 'absolute'
+      ta.style.left = '-9999px'
+      document.body.appendChild(ta)
+      ta.select()
       try {
         document.execCommand('copy')
         done()
       } catch (err) {}
-      sel.removeAllRanges()
+      document.body.removeChild(ta)
     }
   })
 
@@ -244,11 +333,11 @@
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-doc]')
     if (!btn) return
-    var pre = tplBody(btn)
-    if (!pre) return
+    var text = tplText(btn)
+    if (!text) return
     var title = btn.getAttribute('data-doctitle') || 'Документ'
     var name = btn.getAttribute('data-name') || 'zayavlenie.doc'
-    var body = pre.innerText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    var body = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     var html =
       "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>" +
       "<head><meta charset='utf-8'><title>" + title + "</title></head><body>" +

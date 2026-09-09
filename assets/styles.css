@@ -260,6 +260,17 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 .teen-box .big-tel { display: inline-block; font-size: 18px; font-weight: 800; margin: 4px 0 8px; }
 .teen-links { display: grid; gap: 8px; margin-top: 8px; }
 .teen-links a { display: block; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 10px 13px; text-decoration: none; color: var(--ink); font-weight: 600; }
+.teen-box .btn { margin-top: 10px; }
+/* страница «Тебе» */
+.tebe-now p { margin: 6px 0; }
+.tebe-now .big-tel { font-size: 22px; }
+.tebe-group { margin: 18px 0; }
+.tebe-group h3 { margin: 0 0 2px; font-size: 17px; }
+.tebe-g-lead { margin: 0 0 10px; font-size: 13.5px; color: var(--ink-soft); }
+.tebe-cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.tebe-cards a { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 100%; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--sec, var(--accent)); border-radius: 10px; padding: 11px 13px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 14.5px; }
+.tebe-cards a:hover { border-color: var(--accent); }
+.tebe-cards .tc-go { color: var(--accent); font-size: 18px; }
 /* регион */
 .region-box { background: var(--surface-2); border-radius: var(--radius); padding: 14px 16px; margin: 0 0 22px; }
 .region-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -320,6 +331,16 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 .tpl-example { margin-top: 10px; }
 .tpl-example summary { font-weight: 600; cursor: pointer; font-size: 14px; color: var(--accent); }
 .tpl-body--example { background: var(--ok-bg); }
+/* онлайн-заполнение заявления */
+.btn-fill { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.tpl-fill { margin: 4px 0 10px; padding: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
+.tpl-fill-note { font-size: 13px; color: var(--ink-soft); margin: 0 0 8px; }
+.tpl-flds { display: grid; gap: 10px; margin-bottom: 10px; }
+.tpl-fld { display: grid; gap: 4px; font-size: 13.5px; }
+.tpl-fld span { color: var(--ink-soft); word-break: break-word; }
+.tpl-fld input { font: inherit; font-size: 15px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); width: 100%; }
+.tpl-fld input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tpl-preview { white-space: pre-wrap; word-wrap: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; background: var(--surface); border: 1px solid var(--line); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 0; }
 .copy-btn { margin: 8px 0 4px; font: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); cursor: pointer; }
 .copy-btn.done { background: var(--ok-bg); border-color: var(--ok); }
 
