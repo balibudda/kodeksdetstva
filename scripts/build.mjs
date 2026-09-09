@@ -32,6 +32,13 @@ const SITE = {
     'Справочник для родителей: права ребёнка простым языком, защита от насилия и травли, безопасность, психика, здоровье и закон. Одна проблема — одна страница, всё работает офлайн.',
 }
 
+const RU_MONTHS = [
+  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+]
+const _now = new Date()
+const BUILD_MONTH = `${RU_MONTHS[_now.getMonth()]} ${_now.getFullYear()} г.`
+
 // ─── утилиты ────────────────────────────────────────────────────
 const esc = (s = '') =>
   String(s)
@@ -307,13 +314,22 @@ function renderTopic(t) {
     : ''
 
   const templates = t.templates && t.templates.length
-    ? `<section class="tblock templates">
-        <h2><span class="ic" aria-hidden="true">📄</span> Готовые документы — скопируйте и заполните</h2>
+    ? `<section class="tblock templates" id="dokumenty">
+        <h2><span class="ic" aria-hidden="true">📄</span> Готовые документы</h2>
+        <p class="tpl-lead">Кнопки — сразу под названием: <b>⬇️ скачать файл</b> (откроется в Word) или <b>📋 скопировать текст</b>. Заполните поля в квадратных скобках, поставьте дату и подпись. Актуально на <b>${esc(BUILD_MONTH)}</b> — требования меняются, сверяйте с сайтом ведомства.</p>
         ${t.templates
           .map(
-            (tpl) => `<details class="tpl"><summary>${esc(tpl.title)}</summary>
+            (tpl, i) => `<article class="tpl">
+            <h3 class="tpl-title"><span aria-hidden="true">📄</span> ${esc(tpl.title)}</h3>
+            <div class="tpl-actions">
+              <button class="btn btn-doc" type="button" data-doc data-name="${attr(t.slug + '-dok-' + (i + 1) + '.doc')}" data-doctitle="${attr(tpl.title)}">⬇️ Скачать .doc</button>
+              <button class="btn btn-copy" type="button" data-copy>📋 Скопировать текст</button>
+            </div>
+            ${tpl.to ? `<p class="tpl-meta"><b>Кому:</b> ${esc(tpl.to)}</p>` : ''}
+            ${tpl.where ? `<p class="tpl-meta"><b>Куда подать или принести:</b> ${esc(tpl.where)}</p>` : ''}
             <pre class="tpl-body">${esc(tpl.body)}</pre>
-            <button class="copy-btn" type="button" data-copy>Скопировать текст</button></details>`,
+            ${tpl.example ? `<details class="tpl-example"><summary><span aria-hidden="true">👀</span> Показать пример заполнения</summary><pre class="tpl-body tpl-body--example">${esc(tpl.example)}</pre></details>` : ''}
+          </article>`,
           )
           .join('')}
       </section>`

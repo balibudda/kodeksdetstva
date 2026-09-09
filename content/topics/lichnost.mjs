@@ -18,7 +18,7 @@
  * @property {string[]} [dont]         «Чего не говорить и не делать»
  * @property {{range: string, text: string}[]} [ages]  Возрастные линзы: как это по-разному в разном возрасте
  * @property {{ref: string, text: string}[]} [lawQuotes]  Дословные цитаты норм — чтобы сослаться и показать
- * @property {{title: string, body: string}[]} [templates]  Готовые тексты заявлений и обращений
+ * @property {{title: string, body: string, to?: string, where?: string, example?: string}[]} [templates]  Готовые тексты заявлений: to — кому, where — куда подать/принести, example — пример заполнения
  * @property {string[]} contacts       id из content/contacts.mjs
  * @property {string[]} [sources]      «На чём основано» — данные/нормы
  * @property {string[]} [related]      slug'и связанных тем

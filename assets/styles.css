@@ -178,9 +178,34 @@ h2 { font-size: 19px; margin: 24px 0 10px; }
 .lawquotes blockquote { margin: 0; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 10px 10px 0; font-size: 15px; }
 .lawquotes figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
 
-.templates .tpl { border: 1px solid var(--line); border-radius: 10px; padding: 6px 12px; margin: 10px 0; background: var(--surface); }
-.templates summary { font-weight: 700; cursor: pointer; padding: 6px 0; }
-.tpl-body { white-space: pre-wrap; word-wrap: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; background: var(--surface-2); padding: 12px; border-radius: 8px; overflow-x: auto; }
+.templates {
+  background: var(--warn-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.templates > h2 { margin-top: 4px; }
+.tpl-lead { font-size: 13.5px; color: var(--ink-soft); margin: 4px 0 14px; }
+.templates .tpl {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  background: var(--surface);
+}
+.tpl-title { font-size: 15.5px; margin: 0 0 10px; }
+.tpl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.tpl-actions .btn { font-size: 14px; padding: 9px 14px; }
+.btn-doc { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 700; }
+.btn-copy { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+.btn-copy.done { background: var(--ok-bg); border-color: var(--ok); }
+.tpl-meta { font-size: 13.5px; margin: 4px 0; }
+.tpl-meta b { color: var(--accent); }
+.tpl-body { white-space: pre-wrap; word-wrap: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; background: var(--surface-2); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0 0; }
+.tpl-example { margin-top: 10px; }
+.tpl-example summary { font-weight: 600; cursor: pointer; font-size: 14px; color: var(--accent); }
+.tpl-body--example { background: var(--ok-bg); }
 .copy-btn { margin: 8px 0 4px; font: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); cursor: pointer; }
 .copy-btn.done { background: var(--ok-bg); border-color: var(--ok); }
 
