@@ -99,7 +99,7 @@ function block(icon, title, items, { ordered = false, cls = '' } = {}) {
 }
 
 // ─── layout ────────────────────────────────────────────────────
-function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = [], main, noindex = false }) {
+function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = [], main, noindex = false, accent = '' }) {
   const canonical = SITE.origin + canonicalPath
   const ld = jsonLd
     .map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`)
@@ -130,7 +130,7 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
 <link rel="stylesheet" href="/assets/styles.css${V}">
 ${ld}
 </head>
-<body class="${bodyClass}">
+<body class="${bodyClass}"${accent ? ` style="--sec:${accent}"` : ''}>
 <a class="skip" href="#main">К содержанию</a>
 <header class="site-head">
   <div class="head-inner">
@@ -152,6 +152,11 @@ ${main}
     <a href="/poisk/">Поиск</a>
     <a href="/o-proekte/">О проекте</a>
   </nav>
+  <div class="foot-contacts">
+    <p class="foot-c-title">Связаться с нами</p>
+    <p><a href="mailto:info@childofgod.ru">info@childofgod.ru</a> — вопросы, предложения, неточности в материалах.</p>
+    <p class="foot-c-help">Срочная помощь ребёнку: <a href="tel:112">112</a> · детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> (круглосуточно, бесплатно). Больше — на странице <a href="/pomoshch/">«Помощь сейчас»</a>.</p>
+  </div>
   <p class="foot-disclaimer">Материалы носят справочный характер и не заменяют консультацию юриста, врача или психолога.
   Ссылки на нормы даны для ориентира и требуют проверки на актуальность. В острой ситуации сразу обращайтесь за живой помощью.</p>
 </footer>
@@ -161,13 +166,14 @@ ${main}
 }
 
 function breadcrumbs(items) {
-  // items: [{name, url}] последний — текущая страница без ссылки
+  // items: [{name, url, icon?}] последний — текущая страница без ссылки
   const parts = items
-    .map((it, i) =>
-      it.url && i < items.length - 1
-        ? `<a href="${attr(it.url)}">${esc(it.name)}</a>`
-        : `<span aria-current="page">${esc(it.name)}</span>`,
-    )
+    .map((it, i) => {
+      const label = (it.icon ? `<span aria-hidden="true">${it.icon}</span> ` : '') + esc(it.name)
+      return it.url && i < items.length - 1
+        ? `<a href="${attr(it.url)}">${label}</a>`
+        : `<span aria-current="page">${label}</span>`
+    })
     .join('<span class="sep">/</span>')
   return `<nav class="crumbs" aria-label="Хлебные крошки">${parts}</nav>`
 }
@@ -188,8 +194,8 @@ function breadcrumbLd(items) {
 // ─── страницы ──────────────────────────────────────────────────
 function renderHome() {
   const sectionsHtml = SECTIONS.map(
-    (s) => `<li class="sec-card">
-      <a href="${sectionUrl(s)}"><span class="sec-title">${esc(s.title)}</span>
+    (s) => `<li class="sec-card" style="--sec:${s.accent}">
+      <a href="${sectionUrl(s)}"><span class="sec-title"><span class="sec-emoji" aria-hidden="true">${s.icon}</span> ${esc(s.title)}</span>
       <span class="sec-lead">${esc(s.lead)}</span></a>
       <ul class="sec-topics">${topicsOfSection(s.id)
         .slice(0, 6)
@@ -211,7 +217,7 @@ function renderHome() {
 </section>
 <nav class="sec-nav" aria-label="Быстрый переход по разделам">
   ${SECTIONS.map(
-    (s) => `<a class="sec-chip" href="${sectionUrl(s)}"><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
+    (s) => `<a class="sec-chip" href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="sec-chip-i" aria-hidden="true">${s.icon}</span><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
   ).join('')}
 </nav>
 <form class="search-form home-search" role="search" onsubmit="return false">
@@ -272,7 +278,7 @@ function renderSection(s) {
 
   const main = `
 ${breadcrumbs(crumbs)}
-<h1>${esc(s.title)}</h1>
+<h1><span class="sec-emoji" aria-hidden="true">${s.icon}</span> ${esc(s.title)}</h1>
 <p class="frame">${esc(s.frame)}</p>
 <ul class="topic-list">${list}</ul>`
 
@@ -281,6 +287,7 @@ ${breadcrumbs(crumbs)}
     description: `${s.lead} ${s.frame}`.slice(0, 300),
     canonicalPath: sectionUrl(s),
     bodyClass: 'page-section',
+    accent: s.accent,
     jsonLd: [breadcrumbLd(crumbs)],
     main,
   })
@@ -290,7 +297,7 @@ function renderTopic(t) {
   const s = SECTIONS_BY_ID[t.sectionId]
   const crumbs = [
     { name: 'Главная', url: '/' },
-    { name: s.title, url: sectionUrl(s) },
+    { name: s.title, url: sectionUrl(s), icon: s.icon },
     { name: t.title, url: topicUrl(t) },
   ]
 
@@ -396,6 +403,7 @@ ${breadcrumbs(crumbs)}
     description: t.seoDescription,
     canonicalPath: topicUrl(t),
     bodyClass: 'page-topic',
+    accent: s.accent,
     jsonLd: [
       breadcrumbLd(crumbs),
       {

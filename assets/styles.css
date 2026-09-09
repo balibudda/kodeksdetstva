@@ -105,9 +105,13 @@ img { max-width: 100%; }
 }
 main { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
 .site-foot { max-width: 720px; margin: 0 auto; padding: 24px 16px calc(40px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
-.foot-nav { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
+.foot-nav { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
 .foot-nav a { font-weight: 600; font-size: 15px; }
-.foot-disclaimer { color: var(--ink-soft); font-size: 13.5px; line-height: 1.5; }
+.foot-contacts { border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 14px; font-size: 14px; }
+.foot-contacts p { margin: 4px 0; color: var(--ink-soft); }
+.foot-c-title { font-weight: 700; color: var(--ink) !important; margin-bottom: 6px !important; }
+.foot-c-help { font-size: 13.5px; }
+.foot-disclaimer { color: var(--ink-soft); font-size: 13px; line-height: 1.5; border-top: 1px solid var(--line); padding-top: 14px; }
 
 h1 { font-size: 25px; line-height: 1.22; margin: 6px 0 14px; overflow-wrap: break-word; }
 h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
@@ -133,15 +137,18 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
   margin: 18px 0 6px;
 }
 .sec-chip {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 6px;
   text-decoration: none;
   font-size: 14px; font-weight: 600; line-height: 1;
   padding: 9px 12px;
   border-radius: 999px;
   background: var(--surface); color: var(--ink);
   border: 1px solid var(--line);
+  border-left: 3px solid var(--sec, var(--line));
 }
-.sec-chip:hover { border-color: var(--accent); color: var(--accent); }
+.sec-chip:hover { border-color: var(--sec, var(--accent)); color: var(--sec, var(--accent)); }
+.sec-chip-i { font-size: 14px; }
+.sec-emoji { font-style: normal; }
 .sec-chip-n {
   font-size: 12px; font-weight: 700;
   color: var(--ink-soft);
@@ -153,9 +160,10 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 }
 .sec-h { margin-top: 26px; }
 .sec-list, .topic-list, .contact-list, .quick-links, .search-results { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 12px; }
-.sec-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.sec-card { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--sec, var(--line)); border-radius: var(--radius); padding: 14px 16px; }
 .sec-card > a { text-decoration: none; color: var(--ink); display: block; }
 .sec-title { display: block; font-weight: 700; font-size: 18px; color: var(--accent); }
+.sec-emoji { margin-right: 2px; }
 .sec-lead { display: block; color: var(--ink-soft); font-size: 14.5px; margin: 2px 0 8px; }
 .sec-topics { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
 .sec-topics a { font-size: 14.5px; }
@@ -163,11 +171,13 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 .resp-note { margin-top: 26px; background: var(--surface-2); border-radius: var(--radius); padding: 14px 16px; }
 
 /* section list */
-.frame { background: var(--surface-2); border-radius: var(--radius); padding: 14px 16px; margin: 0 0 18px; }
-.topic-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.frame { background: var(--surface-2); border-radius: var(--radius); padding: 14px 16px; margin: 0 0 18px; border-left: 4px solid var(--sec, transparent); }
+.topic-card { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--sec, var(--line)); border-radius: var(--radius); }
 .topic-card > a { display: block; text-decoration: none; color: var(--ink); padding: 14px 16px; }
-.topic-card.is-urgent { border-left: 4px solid var(--danger); }
+.topic-card.is-urgent { border-left: 5px solid var(--danger); }
 .tc-title { display: block; font-weight: 700; }
+/* тонкая цветная линия раздела под липкой шапкой */
+.page-section .site-head, .page-topic .site-head { border-bottom: 2px solid var(--sec, var(--line)); }
 .tc-desc { display: block; color: var(--ink-soft); font-size: 14px; margin-top: 3px; }
 .tc-meta { display: block; color: var(--ink-soft); font-size: 12.5px; margin-top: 6px; }
 
