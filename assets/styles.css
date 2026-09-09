@@ -126,6 +126,7 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 /* home */
 .hero { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
 .hero-lead { margin: 8px 0 14px; }
+.hero-lead2 { font-size: 15px; color: var(--ink-soft); margin-bottom: 16px; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 10px; }
 .btn { display: inline-block; text-decoration: none; font-weight: 700; padding: 11px 16px; border-radius: 999px; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
 .btn-danger { background: var(--danger); color: #fff; border-color: transparent; }
