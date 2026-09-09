@@ -11,7 +11,15 @@ var PRECACHE = /*__PRECACHE__*/ []
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
-      return c.addAll(PRECACHE).catch(function () {})
+      // cache: 'reload' — тянем из сети мимо HTTP-кэша браузера, чтобы новый
+      // service worker не закешировал устаревшие файлы
+      return Promise.all(
+        PRECACHE.map(function (u) {
+          return fetch(new Request(u, { cache: 'reload' }))
+            .then(function (r) { if (r && r.ok) return c.put(u, r) })
+            .catch(function () {})
+        }),
+      )
     }),
   )
   self.skipWaiting()
@@ -29,8 +37,8 @@ self.addEventListener('activate', function (e) {
 })
 
 function bgUpdate(req) {
-  // тихо обновляем кэш из сети, не блокируя ответ
-  fetch(req)
+  // тихо обновляем кэш из сети (мимо HTTP-кэша), не блокируя ответ
+  fetch(new Request(req.url, { cache: 'reload' }))
     .then(function (res) {
       if (res && res.ok) {
         var copy = res.clone()

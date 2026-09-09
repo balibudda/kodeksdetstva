@@ -38,6 +38,10 @@ const RU_MONTHS = [
 ]
 const _now = new Date()
 const BUILD_MONTH = `${RU_MONTHS[_now.getMonth()]} ${_now.getFullYear()} г.`
+const BUILD_ID = String(Date.now())
+// версия для строки запроса статики — гарантированно сбрасывает и HTTP-кэш
+// браузера, и кэш service worker при каждом деплое
+const V = `?v=${BUILD_ID}`
 
 // ─── утилиты ────────────────────────────────────────────────────
 const esc = (s = '') =>
@@ -123,7 +127,7 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/styles.css">
+<link rel="stylesheet" href="/assets/styles.css${V}">
 ${ld}
 </head>
 <body class="${bodyClass}">
@@ -151,7 +155,7 @@ ${main}
   <p class="foot-disclaimer">Материалы носят справочный характер и не заменяют консультацию юриста, врача или психолога.
   Ссылки на нормы даны для ориентира и требуют проверки на актуальность. В острой ситуации сразу обращайтесь за живой помощью.</p>
 </footer>
-<script src="/assets/nav.js" defer></script>
+<script src="/assets/nav.js${V}" defer></script>
 </body>
 </html>`
 }
@@ -216,7 +220,7 @@ function renderHome() {
 <ul id="results" class="search-results" aria-live="polite"></ul>
 <h2 class="sec-h">Разделы — подробно</h2>
 <ul class="sec-list">${sectionsHtml}</ul>
-<script src="/assets/search.js" defer></script>
+<script src="/assets/search.js${V}" defer></script>
 <section class="resp-note">
   <h2>Кто за что отвечает</h2>
   <p>Безопасность и счастье ребёнка — прежде всего зона ответственности родителя. Государство и его органы помогают в своих пределах: полиция и Следственный комитет — по преступлениям, опека и КДН — по защите детей, надзорные органы — по нарушениям учреждений. Ниже — <a href="/kontakty/">полный справочник служб</a> с кликабельными телефонами и ссылками.</p>
@@ -528,7 +532,7 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Поиск', url: 
   <input type="search" id="q" name="q" placeholder="Что случилось?" autocomplete="off" autofocus>
 </form>
 <ul id="results" class="search-results" aria-live="polite"></ul>
-<script src="/assets/search.js" defer></script>`
+<script src="/assets/search.js${V}" defer></script>`
 
   return layout({
     title: `Поиск по ситуации — ${SITE.name}`,
@@ -658,11 +662,19 @@ async function main() {
 
   // service worker с актуальным списком precache
   const swSrc = await readFile(path.join(ROOT, 'assets', 'sw.js'), 'utf8')
-  const precache = [...routes, '/assets/styles.css', '/assets/search.js', '/assets/nav.js', '/search-index.json', '/favicon.svg', '/manifest.webmanifest', '/404.html']
-  const buildId = String(Date.now())
+  const precache = [
+    ...routes,
+    '/assets/styles.css' + V,
+    '/assets/search.js' + V,
+    '/assets/nav.js' + V,
+    '/search-index.json',
+    '/favicon.svg',
+    '/manifest.webmanifest',
+    '/404.html',
+  ]
   const sw = swSrc
     .replace('/*__PRECACHE__*/', JSON.stringify(precache))
-    .replace('/*__BUILD__*/', buildId)
+    .replace('/*__BUILD__*/', BUILD_ID)
   await writeFile(path.join(DIST, 'sw.js'), sw, 'utf8')
 
   console.log(`Готово: ${routes.length} страниц, ${TOPICS.length} тем в ${SECTIONS.length} разделах, ${CONTACTS.length} контактов.`)
