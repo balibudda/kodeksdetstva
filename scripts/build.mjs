@@ -99,7 +99,10 @@ function block(icon, title, items, { ordered = false, cls = '' } = {}) {
 }
 
 // ─── layout ────────────────────────────────────────────────────
-function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = [], main, noindex = false, accent = '' }) {
+function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = [], main, noindex = false, accent = '', data = {} }) {
+  const dataAttrs = Object.entries(data)
+    .map(([k, v]) => ` data-${k}="${attr(v)}"`)
+    .join('')
   const canonical = SITE.origin + canonicalPath
   const ld = jsonLd
     .map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`)
@@ -130,7 +133,7 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
 <link rel="stylesheet" href="/assets/styles.css${V}">
 ${ld}
 </head>
-<body class="${bodyClass}"${accent ? ` style="--sec:${accent}"` : ''}>
+<body class="${bodyClass}"${accent ? ` style="--sec:${accent}"` : ''}${dataAttrs}>
 <a class="skip" href="#main">К содержанию</a>
 <header class="site-head">
   <div class="head-inner">
@@ -150,6 +153,7 @@ ${ld}
           <li><a href="/pomoshch/">🆘 Помощь сейчас</a></li>
           <li><a href="/kontakty/">📞 Все контакты</a></li>
           <li><a href="/poisk/">🔎 Поиск по ситуации</a></li>
+          <li><a href="/moe/">⭐ Моё (закладки и история)</a></li>
           <li><a href="/o-proekte/">О проекте</a></li>
         </ul>
       </nav>
@@ -170,6 +174,7 @@ ${main}
     <a href="/pomoshch/">Помощь сейчас</a>
     <a href="/kontakty/">Все контакты</a>
     <a href="/poisk/">Поиск</a>
+    <a href="/moe/">Моё</a>
     <a href="/o-proekte/">О проекте</a>
   </nav>
   <div class="foot-contacts">
@@ -239,6 +244,7 @@ function renderHome() {
   <div class="hero-cta">
     <a class="btn btn-danger" href="/pomoshch/">🆘 Нужна помощь прямо сейчас</a>
     <a class="btn" href="/poisk/">🔎 Найти свою ситуацию</a>
+    <a class="btn" href="/pomoshch/#podrostku">🧒 Ты подросток? Тебе сюда</a>
   </div>
   <p class="hero-flag"><span class="ic">🚩</span> Внутри тем помечены <b>красные флаги</b> — сигналы, при которых нельзя ждать: дальше может быть очень плохо.</p>
 </section>
@@ -412,6 +418,10 @@ ${breadcrumbs(crumbs)}
     ${t.urgent ? '<p class="urgent-badge">Срочная тема — если это про вас, действуйте не откладывая</p>' : ''}
     <h1>${esc(t.title)}</h1>
     ${t.status === 'planned' ? '<p class="planned-note">Краткий разбор. Тема дополняется — формулировки о законе проходят проверку.</p>' : ''}
+    <div class="topic-actions">
+      <button type="button" class="ta-btn" data-bookmark>☆ В закладки</button>
+      <button type="button" class="ta-btn" data-share>↗ Поделиться</button>
+    </div>
   </header>
   ${redFlags}
   ${sut}
@@ -434,6 +444,7 @@ ${breadcrumbs(crumbs)}
     canonicalPath: topicUrl(t),
     bodyClass: 'page-topic',
     accent: s.accent,
+    data: { 'topic-title': t.title, 'topic-section': s.title },
     jsonLd: [
       breadcrumbLd(crumbs),
       {
@@ -461,6 +472,19 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Помощь се�
 <section class="tblock redflags">
   <h2>Если жизни или здоровью ребёнка угрожает опасность прямо сейчас</h2>
   <p class="rf-note">Звоните <a href="tel:112">112</a> или в скорую — немедленно, не дочитывая страницу.</p>
+</section>
+<section class="teen-box" id="podrostku">
+  <h2>🧒 Если ты подросток и тебе нужна помощь</h2>
+  <p>Тебе тяжело, страшно, дома бьют, травят, шантажируют, не хочется жить? Это не твоя вина, и тебе есть к кому обратиться.</p>
+  <a class="big-tel" href="tel:+78002000122">☎ 8 800 2000 122</a>
+  <p>Детский телефон доверия — бесплатно, анонимно, круглосуточно. Можно просто рассказать, что происходит, и спросить, что делать.</p>
+  <div class="teen-links">
+    ${['rebenku-doma-nebezopasno', 'suicidalnye-signaly', 'travlya-rebenok-molchit', 'sextortion', 'dopros-nesovershennoletnego', 'pervaya-lyubov-otverzhenie']
+      .map((slug) => TOPICS_BY_SLUG[slug])
+      .filter(Boolean)
+      .map((t) => `<a href="${topicUrl(t)}">${esc(t.title)}</a>`)
+      .join('')}
+  </div>
 </section>
 <section class="tblock contacts">
   <h2>Экстренные линии</h2>
@@ -583,6 +607,27 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Поиск', url: 
   })
 }
 
+function renderMoe() {
+  const main = `
+${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Моё', url: '/moe/' }])}
+<h1>⭐ Моё: закладки и история</h1>
+<p class="frame">Сохранённые темы и то, что вы недавно открывали, чтобы быстро вернуться. Хранится только в этом браузере, никуда не отправляется.</p>
+<h2>Закладки</h2>
+<ul id="moe-bm" class="moe-list"></ul>
+<h2>Недавно открывали <button type="button" id="moe-clear" class="ta-btn">очистить</button></h2>
+<ul id="moe-hist" class="moe-list"></ul>
+<script src="/assets/nav.js${V}" defer></script>`
+
+  return layout({
+    title: `Моё: закладки и история — ${SITE.name}`,
+    description: 'Сохранённые темы и история просмотров, чтобы быстро вернуться к нужному вопросу.',
+    canonicalPath: '/moe/',
+    bodyClass: 'page-moe',
+    noindex: true,
+    main,
+  })
+}
+
 function render404() {
   const main = `
 <h1>Страница не найдена</h1>
@@ -681,6 +726,7 @@ async function main() {
   routes.push(await writePage('/kontakty/', renderKontakty()))
   routes.push(await writePage('/o-proekte/', renderAbout()))
   routes.push(await writePage('/poisk/', renderSearch()))
+  routes.push(await writePage('/moe/', renderMoe()))
 
   for (const s of SECTIONS) routes.push(await writePage(sectionUrl(s), renderSection(s)))
   for (const t of TOPICS) routes.push(await writePage(topicUrl(t), renderTopic(t)))
@@ -689,7 +735,7 @@ async function main() {
 
   // индекс поиска, sitemap, robots, manifest
   await writeFile(path.join(DIST, 'search-index.json'), JSON.stringify(buildSearchIndex()), 'utf8')
-  const indexable = routes.filter((r) => r !== '/poisk/')
+  const indexable = routes.filter((r) => r !== "/poisk/" && r !== "/moe/")
   await writeFile(path.join(DIST, 'sitemap.xml'), buildSitemap(indexable), 'utf8')
   await writeFile(path.join(DIST, 'robots.txt'), ROBOTS, 'utf8')
   await writeFile(path.join(DIST, 'manifest.webmanifest'), MANIFEST, 'utf8')

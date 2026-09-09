@@ -243,6 +243,22 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 /* topic page */
 .urgent-badge { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-line); border-radius: 10px; padding: 8px 12px; font-weight: 700; font-size: 14.5px; }
 .planned-note, .rf-note, .contact-verify { color: var(--ink-soft); font-size: 13.5px; }
+.topic-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.ta-btn { font: inherit; font-size: 13.5px; font-weight: 600; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); cursor: pointer; }
+.ta-btn.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+#moe-clear { font-size: 12px; padding: 3px 10px; margin-left: 8px; vertical-align: middle; font-weight: 600; }
+.moe-list { list-style: none; padding: 0; margin: 10px 0 22px; display: grid; gap: 8px; }
+.moe-list li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.moe-list a { display: block; text-decoration: none; color: var(--ink); padding: 11px 14px; }
+.moe-t { display: block; font-weight: 600; color: var(--accent); }
+.moe-s { display: block; font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+.moe-empty { padding: 12px 14px; color: var(--ink-soft); font-size: 14px; }
+/* блок «если ты подросток» */
+.teen-box { background: var(--frame-bg); border: 1px solid var(--accent); border-radius: var(--radius); padding: 14px 16px; margin: 16px 0; }
+.teen-box h2 { margin-top: 4px; }
+.teen-box .big-tel { display: inline-block; font-size: 18px; font-weight: 800; margin: 4px 0 8px; }
+.teen-links { display: grid; gap: 8px; margin-top: 8px; }
+.teen-links a { display: block; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 10px 13px; text-decoration: none; color: var(--ink); font-weight: 600; }
 .tblock { margin: 22px 0; }
 .tblock ul, .tblock ol { padding-left: 22px; margin: 8px 0; }
 .tblock li { margin: 7px 0; }

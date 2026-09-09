@@ -51,6 +51,93 @@
     }
   })
 
+  // ── Закладки, история просмотров, «поделиться» — всё локально (localStorage) ──
+  var BM_KEY = 'cog_bm'
+  var HIST_KEY = 'cog_hist'
+  function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || '[]') } catch (e) { return [] } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) {} }
+
+  var page = document.body.dataset || {}
+  var pageEntry = page.topicTitle
+    ? { u: location.pathname, t: page.topicTitle, s: page.topicSection || '', ts: Date.now() }
+    : null
+
+  // история: только страницы тем, до 40, свежие сверху, без дублей
+  if (pageEntry) {
+    var hist = lsGet(HIST_KEY).filter(function (x) { return x.u !== pageEntry.u })
+    hist.unshift(pageEntry)
+    lsSet(HIST_KEY, hist.slice(0, 40))
+  }
+
+  function isBookmarked(u) {
+    return lsGet(BM_KEY).some(function (x) { return x.u === u })
+  }
+  function paintBookmarkBtn(btn) {
+    var on = isBookmarked(location.pathname)
+    btn.classList.toggle('on', on)
+    btn.textContent = on ? '★ В закладках' : '☆ В закладки'
+  }
+  var bmBtn = document.querySelector('[data-bookmark]')
+  if (bmBtn && pageEntry) {
+    paintBookmarkBtn(bmBtn)
+    bmBtn.addEventListener('click', function () {
+      var bm = lsGet(BM_KEY)
+      if (isBookmarked(pageEntry.u)) {
+        bm = bm.filter(function (x) { return x.u !== pageEntry.u })
+      } else {
+        bm.unshift({ u: pageEntry.u, t: pageEntry.t, s: pageEntry.s, ts: Date.now() })
+      }
+      lsSet(BM_KEY, bm)
+      paintBookmarkBtn(bmBtn)
+    })
+  } else if (bmBtn) {
+    bmBtn.hidden = true
+  }
+
+  var shBtn = document.querySelector('[data-share]')
+  if (shBtn) {
+    shBtn.addEventListener('click', function () {
+      var data = { title: document.title, url: location.href }
+      if (navigator.share) {
+        navigator.share(data).catch(function () {})
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(location.href).then(function () {
+          var old = shBtn.textContent
+          shBtn.textContent = 'Ссылка скопирована ✓'
+          setTimeout(function () { shBtn.textContent = old }, 2500)
+        })
+      }
+    })
+  }
+
+  // страница «Моё» — рендер закладок и истории
+  var moeBm = document.getElementById('moe-bm')
+  var moeHist = document.getElementById('moe-hist')
+  if (moeBm || moeHist) {
+    function row(x) {
+      return '<li><a href="' + x.u + '"><span class="moe-t">' +
+        (x.t || x.u).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] }) +
+        '</span>' + (x.s ? '<span class="moe-s">' + x.s + '</span>' : '') + '</a></li>'
+    }
+    if (moeBm) {
+      var bm = lsGet(BM_KEY)
+      moeBm.innerHTML = bm.length
+        ? bm.map(row).join('')
+        : '<li class="moe-empty">Пока пусто. На странице любой темы нажмите «☆ В закладки».</li>'
+    }
+    if (moeHist) {
+      var h = lsGet(HIST_KEY)
+      moeHist.innerHTML = h.length
+        ? h.map(row).join('')
+        : '<li class="moe-empty">История появится, когда вы откроете несколько тем.</li>'
+      var clr = document.getElementById('moe-clear')
+      if (clr) clr.addEventListener('click', function () {
+        lsSet(HIST_KEY, [])
+        moeHist.innerHTML = '<li class="moe-empty">История очищена.</li>'
+      })
+    }
+  }
+
   // ⬇️ Скачать шаблон как .doc (HTML-обёртка, открывается в Word). Работает офлайн.
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-doc]')
