@@ -566,6 +566,7 @@ ${sections}
 function regionContactHtml(c) {
   const acts = []
   if (c.tel) acts.push(`<a class="c-act c-tel" href="${attr(telHref(c.tel))}">☎ ${esc(c.telDisplay || c.tel)}</a>`)
+  if (c.email) acts.push(`<a class="c-act c-mail" href="mailto:${attr(c.email)}">✉ ${esc(c.email)}</a>`)
   if (c.site) acts.push(`<a class="c-act c-site" href="${attr(c.site)}" target="_blank" rel="noopener noreferrer">🔗 ${esc(c.siteDisplay || c.site)}</a>`)
   return `<li class="contact">
     <div class="contact-name">${esc(c.name)}</div>

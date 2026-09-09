@@ -78,6 +78,7 @@
       var items = (r.contacts || []).map(function (c) {
         var acts = []
         if (c.tel) acts.push('<a class="c-act c-tel" href="' + telHref2(c.tel) + '">☎ ' + esc2(c.telDisplay || c.tel) + '</a>')
+        if (c.email) acts.push('<a class="c-act c-mail" href="mailto:' + esc2(c.email) + '">✉ ' + esc2(c.email) + '</a>')
         if (c.site) acts.push('<a class="c-act c-site" href="' + esc2(c.site) + '" target="_blank" rel="noopener noreferrer">🔗 ' + esc2(c.siteDisplay || c.site) + '</a>')
         return '<li class="contact"><div class="contact-name">' + esc2(c.name) + '</div>' +
           '<div class="contact-when"><b>Когда обращаться:</b> ' + esc2(c.when) + '</div>' +
