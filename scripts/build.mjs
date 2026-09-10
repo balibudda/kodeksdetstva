@@ -31,6 +31,25 @@ const SITE = {
   tagline: 'родителям и подросткам о правах, безопасности и помощи',
   description:
     'Справочник для родителей и подростков: права ребёнка простым языком, защита от насилия и травли, безопасность, психика, здоровье, закон. По каждой ситуации — что делать по шагам, что говорит закон и куда обратиться.',
+  ogImage: '/og-cover.png',
+  ogImageW: 1200,
+  ogImageH: 630,
+  logo: '/icons/icon-512.png',
+}
+
+// Организация-издатель — общий узел для JSON-LD (нужен Google для rich results)
+function orgNode() {
+  return {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE.origin + '/',
+    logo: {
+      '@type': 'ImageObject',
+      url: SITE.origin + SITE.logo,
+      width: 512,
+      height: 512,
+    },
+  }
 }
 
 const RU_MONTHS = [
@@ -100,11 +119,12 @@ function block(icon, title, items, { ordered = false, cls = '' } = {}) {
 }
 
 // ─── layout ────────────────────────────────────────────────────
-function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = [], main, noindex = false, accent = '', data = {} }) {
+function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = [], main, noindex = false, accent = '', data = {}, image = SITE.ogImage, ogType = 'website', modifiedTime = '' }) {
   const dataAttrs = Object.entries(data)
     .map(([k, v]) => ` data-${k}="${attr(v)}"`)
     .join('')
   const canonical = SITE.origin + canonicalPath
+  const ogImg = SITE.origin + (image || SITE.ogImage)
   const ld = jsonLd
     .map((o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`)
     .join('\n')
@@ -133,13 +153,22 @@ function layout({ title, description, canonicalPath, bodyClass = '', jsonLd = []
 <meta name="description" content="${attr(description)}">
 <link rel="canonical" href="${attr(canonical)}">
 ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robots" content="index,follow,max-image-preview:large">'}
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="${attr(SITE.name)}">
+<meta property="og:type" content="${ogType}">
+<meta property="og:site_name" content="${attr(SITE.name)}">${ogType === 'article' && modifiedTime ? `\n<meta property="article:modified_time" content="${attr(modifiedTime)}">\n<meta property="article:published_time" content="${attr(modifiedTime)}">` : ''}
 <meta property="og:locale" content="ru_RU">
 <meta property="og:title" content="${attr(title)}">
 <meta property="og:description" content="${attr(description)}">
 <meta property="og:url" content="${attr(canonical)}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${attr(ogImg)}">
+<meta property="og:image:secure_url" content="${attr(ogImg)}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="${SITE.ogImageW}">
+<meta property="og:image:height" content="${SITE.ogImageH}">
+<meta property="og:image:alt" content="${attr(SITE.name + ' — справочник о правах и безопасности ребёнка')}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${attr(title)}">
+<meta name="twitter:description" content="${attr(description)}">
+<meta name="twitter:image" content="${attr(ogImg)}">
 <meta name="theme-color" content="#3a6b5f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="${attr(SITE.name)}">
@@ -335,13 +364,21 @@ function renderHome() {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: SITE.name,
+        alternateName: 'kodeksdetstva.ru',
         url: SITE.origin + '/',
         inLanguage: 'ru-RU',
+        description: SITE.description,
+        publisher: orgNode(),
         potentialAction: {
           '@type': 'SearchAction',
           target: SITE.origin + '/poisk/?q={search_term_string}',
           'query-input': 'required name=search_term_string',
         },
+      },
+      {
+        '@context': 'https://schema.org',
+        ...orgNode(),
+        description: SITE.description,
       },
     ],
     main,
@@ -506,6 +543,8 @@ ${breadcrumbs(crumbs)}
     canonicalPath: topicUrl(t),
     bodyClass: 'page-topic',
     accent: s.accent,
+    ogType: 'article',
+    modifiedTime: t.updated || '',
     data: { 'topic-title': t.title, 'topic-section': s.title },
     jsonLd: [
       breadcrumbLd(crumbs),
@@ -515,11 +554,15 @@ ${breadcrumbs(crumbs)}
         headline: t.title,
         description: t.seoDescription,
         inLanguage: 'ru-RU',
-        dateModified: t.updated,
+        ...(t.updated ? { datePublished: t.updated, dateModified: t.updated } : {}),
         mainEntityOfPage: SITE.origin + topicUrl(t),
+        image: [SITE.origin + SITE.ogImage],
+        articleSection: s.title,
         about: s.title,
         keywords: (t.keywords || []).join(', '),
-        publisher: { '@type': 'Organization', name: SITE.name },
+        isAccessibleForFree: true,
+        author: orgNode(),
+        publisher: orgNode(),
       },
     ],
     main,

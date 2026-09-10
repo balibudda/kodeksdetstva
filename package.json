@@ -6,7 +6,9 @@
   "description": "Кодекс детства — справочник для родителей и подростков: права ребёнка, безопасность, насилие и травля, психика, здоровье, детдом и усыновление, закон. Многостраничный статический сайт: одна проблема — одна HTML-страница.",
   "scripts": {
     "icons": "node scripts/gen-icons.mjs",
-    "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
+    "og": "node scripts/gen-og.mjs",
+    "assets": "node scripts/gen-icons.mjs && node scripts/gen-tg-banner.mjs && node scripts/gen-og.mjs",
+    "build": "node scripts/gen-icons.mjs && node scripts/gen-og.mjs && node scripts/build.mjs",
     "serve": "node scripts/serve.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs"
   }
