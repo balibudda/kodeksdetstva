@@ -91,6 +91,12 @@ const GREETING =
 
 const bot = new Bot(TOKEN)
 
+// SDK-обработчик по умолчанию логирует только апдейт, без текста самой ошибки —
+// подставляем свой, чтобы в логах Vercel было видно реальную причину сбоя.
+bot.catch((err, ctx) => {
+  console.error('MAX bot handler error:', err && err.stack ? err.stack : err, 'update_type:', ctx?.update?.update_type)
+})
+
 bot.on('bot_started', async (ctx) => {
   const payload = ctx.startPayload || ''
   await ctx.reply(GREETING, { attachments: [startKeyboard(deepUrl(payload))] })
