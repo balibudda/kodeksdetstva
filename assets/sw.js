@@ -37,6 +37,14 @@ self.addEventListener('activate', function (e) {
   self.clients.claim()
 })
 
+// ВАЖНО: везде ниже matching идёт через caches.open(CACHE).then(c => c.match(...)),
+// а не через голый caches.match(...). caches.match() (без открытия конкретного
+// кэша) ищет по ВСЕМ версиям кэша этого источника и может отдать запись из
+// кэша прошлого деплоя, если activate ещё не успел его подчистить — то есть
+// «залипшие» старые данные (например, устаревший regions.json или список тем
+// в поиске) после деплоя могли показываться, пока пользователь не нажмёт
+// «Обновить» вручную. Открытие именно текущего CACHE это исключает: если
+// записи там нет — сразу идём в сеть, а не в чужую версию кэша.
 function putInCache(req, res) {
   if (res && res.ok && res.type === 'basic') {
     var copy = res.clone()
@@ -45,22 +53,39 @@ function putInCache(req, res) {
   return res
 }
 
+function matchCurrent(req, opts) {
+  return caches.open(CACHE).then(function (c) { return c.match(req, opts) })
+}
+
+// Файлы данных: даже при cache-first для статики их лучше обновлять «сетью
+// вперёд», как переходы между страницами — от них зависит актуальность
+// контента (регионы, поисковый индекс), а не только скорость отрисовки.
+var NETWORK_FIRST_PATHS = ['/regions.json', '/search-index.json']
+
 self.addEventListener('fetch', function (e) {
   var req = e.request
   if (req.method !== 'GET') return
   var url = new URL(req.url)
   if (url.origin !== location.origin) return
 
-  // ── Переходы между страницами: network-first с тайм-аутом ──
-  if (req.mode === 'navigate') {
+  var networkFirst = req.mode === 'navigate' || NETWORK_FIRST_PATHS.indexOf(url.pathname) !== -1
+
+  // ── Переходы и файлы данных: сеть с тайм-аутом, при неудаче — кэш текущей версии ──
+  if (networkFirst) {
+    var isNavigate = req.mode === 'navigate'
     e.respondWith(
       new Promise(function (resolve) {
         var done = false
         var timer = setTimeout(function () {
           if (done) return
           done = true
-          caches.match(req, { ignoreSearch: true }).then(function (c) {
-            resolve(c || caches.match('/') || caches.match('/404.html'))
+          matchCurrent(req, { ignoreSearch: true }).then(function (c) {
+            if (c) return resolve(c)
+            if (isNavigate) {
+              matchCurrent('/').then(function (h) { resolve(h || matchCurrent('/404.html')) })
+            } else {
+              resolve(new Response('', { status: 504, statusText: 'offline' }))
+            }
           })
         }, NET_TIMEOUT)
 
@@ -76,8 +101,13 @@ self.addEventListener('fetch', function (e) {
             if (done) return
             done = true
             clearTimeout(timer)
-            caches.match(req, { ignoreSearch: true }).then(function (c) {
-              resolve(c || caches.match('/') || caches.match('/404.html'))
+            matchCurrent(req, { ignoreSearch: true }).then(function (c) {
+              if (c) return resolve(c)
+              if (isNavigate) {
+                matchCurrent('/').then(function (h) { resolve(h || matchCurrent('/404.html')) })
+              } else {
+                resolve(new Response('', { status: 504, statusText: 'offline' }))
+              }
             })
           })
       }),
@@ -85,9 +115,9 @@ self.addEventListener('fetch', function (e) {
     return
   }
 
-  // ── Всё остальное: cache-first ──
+  // ── Статика (CSS/JS/иконки, версионированы ?v=<buildId>): cache-first ──
   e.respondWith(
-    caches.match(req).then(function (cached) {
+    matchCurrent(req).then(function (cached) {
       if (cached) return cached
       return fetch(req)
         .then(function (res) { return putInCache(req, res) })
