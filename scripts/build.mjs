@@ -232,6 +232,7 @@ ${main}
   <div class="foot-contacts">
     <p class="foot-c-title">Связаться с нами</p>
     <p><a href="mailto:info@kodeksdetstva.ru">info@kodeksdetstva.ru</a> — вопросы, предложения, неточности в материалах.</p>
+    <p><a href="https://t.me/Reborn_Lab" target="_blank" rel="noopener noreferrer">Telegram: @Reborn_Lab</a> — если письмо не дойдёт, можно написать сюда.</p>
     <p class="foot-tg"><a href="https://t.me/kodeksdetstva_bot/kdbot" target="_blank" rel="noopener noreferrer">📱 Открыть в Telegram</a> — та же справка в виде мини-приложения.</p>
     <p class="foot-c-help">Срочная помощь ребёнку: <a href="tel:112">112</a> · детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> (круглосуточно, бесплатно). Больше — на странице <a href="/pomoshch/">«Помощь сейчас»</a>.</p>
   </div>
