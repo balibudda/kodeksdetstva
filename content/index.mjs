@@ -6,6 +6,7 @@ import { REGIONS, REGIONS_BY_ID } from './regions.mjs'
 
 import { TOPICS_LICHNOST } from './topics/lichnost.mjs'
 import { TOPICS_SEMYA } from './topics/semya.mjs'
+import { TOPICS_SEMEYNYE_DELA } from './topics/semeynye-dela.mjs'
 import { TOPICS_SIROTSTVO } from './topics/sirotstvo.mjs'
 import { TOPICS_RAZVOD } from './topics/razvod.mjs'
 import { TOPICS_BEZOPASNOST } from './topics/bezopasnost.mjs'
@@ -22,6 +23,7 @@ import { TOPICS_PERVAYA_LYUBOV } from './topics/pervaya-lyubov.mjs'
 export const TOPICS = [
   ...TOPICS_LICHNOST,
   ...TOPICS_SEMYA,
+  ...TOPICS_SEMEYNYE_DELA,
   ...TOPICS_SIROTSTVO,
   ...TOPICS_RAZVOD,
   ...TOPICS_BEZOPASNOST,

@@ -4,6 +4,19 @@
   "buildCommand": "node scripts/build.mjs",
   "outputDirectory": "dist",
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/semya/materinskiy-kapital", "destination": "/semeynye-dela/materinskiy-kapital", "permanent": true },
+    { "source": "/semya/rebenok-poteryal-roditelya", "destination": "/semeynye-dela/rebenok-poteryal-roditelya", "permanent": true },
+    { "source": "/semya/semya-v-nuzhde-mery-podderzhki", "destination": "/semeynye-dela/semya-v-nuzhde-mery-podderzhki", "permanent": true },
+    { "source": "/semya/vyplaty-pri-rozhdenii-rebenka", "destination": "/semeynye-dela/vyplaty-pri-rozhdenii-rebenka", "permanent": true },
+    { "source": "/semya/mnogodetnaya-semya", "destination": "/semeynye-dela/mnogodetnaya-semya", "permanent": true },
+    { "source": "/semya/imushchestvo-i-nasledstvo-rebenka", "destination": "/semeynye-dela/imushchestvo-i-nasledstvo-rebenka", "permanent": true },
+    { "source": "/semya/propiska-registraciya-rebenka", "destination": "/semeynye-dela/propiska-registraciya-rebenka", "permanent": true },
+    { "source": "/semya/dokumenty-rebenka", "destination": "/semeynye-dela/dokumenty-rebenka", "permanent": true },
+    { "source": "/semya/roditel-v-sizo-ili-kolonii", "destination": "/semeynye-dela/roditel-v-sizo-ili-kolonii", "permanent": true },
+    { "source": "/semya/rebenok-zhivet-u-rodstvennikov", "destination": "/semeynye-dela/rebenok-zhivet-u-rodstvennikov", "permanent": true },
+    { "source": "/semya/deti-rossiyan-za-granicey", "destination": "/semeynye-dela/deti-rossiyan-za-granicey", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
