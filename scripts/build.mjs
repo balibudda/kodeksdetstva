@@ -593,8 +593,8 @@ function renderTebe() {
     ['Любовь, тело, отношения', 'Отвергли, в отношениях плохо, залёт, вопросы про тело.', [
       'pervaya-lyubov-otverzhenie', 'toksichnye-otnosheniya', 'rannie-otnosheniya-i-zakon', 'podrostkovaya-kontratseptsiya', 'rannyaya-beremennost', 'telo-ves-vneshnost',
     ]],
-    ['Полиция и закон', 'Задержали, вызвали на допрос, КДН, комендантский час, повестка.', [
-      'dopros-nesovershennoletnego', 'zaderzhanie-dosmotr', 'uchet-kdn', 'komendantskiy-chas', 'zakladki-veshchestva', 'prizyv-i-voenkomat',
+    ['Полиция и закон', 'За что судят, задержали, вызвали на допрос, КДН, комендантский час, повестка.', [
+      'ugolovnaya-otvetstvennost-podrostka', 'dopros-nesovershennoletnego', 'zaderzhanie-dosmotr', 'uchet-kdn', 'komendantskiy-chas', 'zakladki-veshchestva', 'prizyv-i-voenkomat',
     ]],
     ['Вещества и зависимости', 'Вейп, алкоголь в компании, ставки и игры затянули.', [
       'veypy-nikotin', 'alkogol-i-kompanii', 'zavisimost-ot-igr-i-stavok', 'pochemu-tyanet-na-zapretnoe',
