@@ -10,6 +10,10 @@
     "assets": "node scripts/gen-icons.mjs && node scripts/gen-tg-banner.mjs && node scripts/gen-og.mjs",
     "build": "node scripts/gen-icons.mjs && node scripts/gen-og.mjs && node scripts/build.mjs",
     "serve": "node scripts/serve.mjs",
-    "dev": "node scripts/build.mjs && node scripts/serve.mjs"
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "max:webhook": "node scripts/max-set-webhook.mjs"
+  },
+  "dependencies": {
+    "@maxhub/max-bot-api": "^0.3.1"
   }
 }
