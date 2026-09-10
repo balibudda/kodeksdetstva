@@ -427,7 +427,7 @@ export const TOPICS_BEZOPASNOST = [
       'ФЗ «О порядке выезда из РФ и въезда в РФ», ст. 20, 21; ФЗ «О Консульском уставе РФ»; Семейный кодекс РФ, ст. 55.',
       'Требования конкретных стран к въезду детей — сверять на сайтах их посольств/консульств перед поездкой.',
     ],
-    related: ['roditelskoe-pohishchenie', 'rebenok-poteryalsya', 'mesto-zhitelstva-i-obshchenie'],
+    related: ['roditelskoe-pohishchenie', 'rebenok-poteryalsya', 'mesto-zhitelstva-i-obshchenie', 'deti-rossiyan-za-granicey'],
   },
 
   {
