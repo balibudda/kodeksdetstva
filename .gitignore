@@ -8,3 +8,5 @@ dist-ssr
 .vercel
 .idea
 *.tsbuildinfo
+audit-report.md
+audit-title.txt

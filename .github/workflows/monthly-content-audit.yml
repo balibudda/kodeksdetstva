@@ -1,0 +1,31 @@
+name: Ежемесячный аудит контента
+
+on:
+  schedule:
+    - cron: '23 5 3 * *' # ~3 числа каждого месяца, ~12:23 Bangkok
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Запустить аудит (без ИИ, ничего не правит)
+        run: node scripts/content-audit.mjs
+      - name: Убедиться, что лейбл существует
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh label create content-audit --color ededed --description "Ежемесячный автоаудит контента" --force
+      - name: Открыть Issue с результатом
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE=$(cat audit-title.txt)
+          gh issue create --title "$TITLE" --body-file audit-report.md --label content-audit
