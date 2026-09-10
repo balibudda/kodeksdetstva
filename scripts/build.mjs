@@ -182,7 +182,7 @@ ${ld}
     <a class="logo" href="/"><img class="logo-mark" src="/favicon.svg" alt="" width="24" height="24"><span>${esc(SITE.name)}</span></a>
     <div class="head-actions">
       <button type="button" class="reload-btn" data-reload aria-label="Обновить страницу и сбросить кэш" title="Обновить: сбросить кэш и перезагрузить эту страницу">↻</button>
-      <a class="help-btn" href="/pomoshch/">🆘 Помощь сейчас</a>
+      <a class="help-btn" href="/pomoshch/" aria-label="Помощь сейчас"><span class="help-btn-i" aria-hidden="true">🆘</span><span class="help-btn-t">Помощь сейчас</span></a>
     </div>
   </div>
 </header>
