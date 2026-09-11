@@ -665,7 +665,7 @@ export const TOPICS_SEMEYNYE_DELA = [
     sources: [
       'ФЗ «О гражданстве Российской Федерации» от 28.04.2023 № 138-ФЗ, ст. 7, 11, 13; Уголовный кодекс РФ, ст. 330.2; Семейный кодекс РФ, ст. 156–158; ФЗ «О правовом положении иностранных граждан в РФ» от 25.07.2002 № 115-ФЗ, ст. 6.',
     ],
-    related: ['dokumenty-rebenka', 'deti-rossiyan-za-granicey', 'vyezd-za-granicu', 'propiska-registraciya-rebenka'],
+    related: ['dokumenty-rebenka', 'deti-rossiyan-za-granicey', 'vyezd-za-granicu', 'propiska-registraciya-rebenka', 'alimenty-s-roditelya-za-granicey'],
   },
 
   {
