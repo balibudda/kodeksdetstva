@@ -789,8 +789,7 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Все конта�
   <p class="foot-disclaimer">Кроме федеральных линий, у регионов есть свои: уполномоченный по правам ребёнка, кризисные центры, выплаты. Полный список регионов — на странице <a href="/regiony/">«Регионы»</a>. Регион можно определить по IP или выбрать вручную; выбор хранится только в этом браузере.</p>
 </section>
 
-${sections}
-<script src="/assets/nav.js${V}" defer></script>`
+${sections}`
 
   return layout({
     title: `Все контакты помощи детям и родителям — ${SITE.name}`,
@@ -1146,8 +1145,7 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Моё', url: '/mo
 <h2>Закладки</h2>
 <ul id="moe-bm" class="moe-list"></ul>
 <h2>Недавно открывали <button type="button" id="moe-clear" class="ta-btn">очистить</button></h2>
-<ul id="moe-hist" class="moe-list"></ul>
-<script src="/assets/nav.js${V}" defer></script>`
+<ul id="moe-hist" class="moe-list"></ul>`
 
   return layout({
     title: `Моё: закладки и история — ${SITE.name}`,
