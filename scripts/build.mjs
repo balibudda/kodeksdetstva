@@ -233,7 +233,27 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/styles.css${V}">
-<script async src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+// telegram-web-app.js грузится только внутри Telegram — а не для каждого
+// обычного посетителя сайта. Меньше внешних доменов на загрузке — быстрее
+// и надёжнее там, где с telegram.org может быть трение у провайдера.
+// Метку tgWebApp* Telegram кладёт в адрес только на самой первой открытой
+// странице, а не при каждом переходе (у нас многостраничный сайт, не SPA) —
+// поэтому сам факт «мы внутри Telegram» дополнительно запоминаем на сессию.
+(function () {
+  var inTg = /tgWebApp/.test(location.hash) || /tgWebApp/.test(location.search)
+  try {
+    if (inTg) sessionStorage.setItem('kd_tg', '1')
+    else inTg = sessionStorage.getItem('kd_tg') === '1'
+  } catch (e) {}
+  if (inTg) {
+    var s = document.createElement('script')
+    s.src = 'https://telegram.org/js/telegram-web-app.js'
+    s.async = true
+    document.head.appendChild(s)
+  }
+})()
+</script>
 ${ld}
 </head>
 <body class="${bodyClass}"${accent ? ` style="--sec:${accent}"` : ''}${dataAttrs}>
