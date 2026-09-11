@@ -93,6 +93,18 @@ JS-объекты, без CMS и без базы:
   `~/Desktop/sync.py` на машине Ника. Читать оттуда можно, светить в чате
   или коммитить — нет.
 
+## Vercel deployment cleanup (2026-09-11)
+
+`.github/workflows/vercel-deployment-cleanup.yml` — daily cron, `vercel
+remove kodeksdetstva --safe --yes`. Added account-wide after an
+account-level "Exceeded free resources" scare traced mostly to
+nikolablajen-app's 466 retained deployments, but this project had 69
+too (small builds, just high commit volume during active dev). `--safe`
+only deletes deployments with no active alias — the live site is never
+touched. Full story/root-cause writeup lives in nikolablajen-app's own
+CLAUDE.md (search "Vercel Deployment Storage crisis") since that's where
+it was diagnosed — not duplicated here.
+
 ## Стиль
 
 Тон карточек — прямой, без канцелярита и без давления. Ребёнок — личность, а
