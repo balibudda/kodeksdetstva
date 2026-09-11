@@ -17,6 +17,7 @@ import {
   TOPICS_BY_SLUG,
   topicUrl,
   sectionUrl,
+  regionUrl,
   topicsOfSection,
   validateContent,
 } from '../content/index.mjs'
@@ -865,21 +866,26 @@ function regionContactHtml(c) {
 }
 
 function renderRegiony() {
-  const list = REGIONS.map(
-    (r) => `<section class="tblock contacts" id="reg-${r.id}">
-      <h2>${esc(r.name)}</h2>
-      ${r.note ? `<p class="frame">${esc(r.note)}</p>` : ''}
-      <p class="rf-note">Детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> работает и здесь — круглосуточно, бесплатно, анонимно.</p>
-      <ul class="contact-list">${r.contacts.map(regionContactHtml).join('')}</ul>
-    </section>`,
+  const cards = REGIONS.map(
+    (r) => `<li class="sec-card">
+      <a class="sec-card-head" href="${regionUrl(r)}">
+        <span class="sec-card-txt">
+          <span class="sec-title">${esc(r.name)}</span>
+          <span class="sec-lead">Уполномоченный по правам ребёнка и другие контакты региона</span>
+          <span class="sec-open">Открыть контакты →</span>
+        </span>
+        <span class="tc-go" aria-hidden="true">›</span>
+      </a>
+    </li>`,
   ).join('')
 
+  const crumbs = [{ name: 'Главная', url: '/' }, { name: 'Регионы', url: '/regiony/' }]
   const main = `
-${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Регионы', url: '/regiony/' }])}
+${breadcrumbs(crumbs)}
 <h1>Региональные контакты: города-миллионники, Москва и Московская область</h1>
-<p class="frame">Кроме федеральных линий и фондов, у каждого региона есть свой уполномоченный по правам ребёнка, комиссии, кризисные центры и меры поддержки семей. Ниже — как их найти по вашему региону. Данные наполняются постепенно; помеченные ⚠️ контакты сверяйте с официальными сайтами.</p>
-<nav class="sec-nav">${REGIONS.map((r) => `<a class="sec-chip" href="#reg-${r.id}">${esc(r.tag)}</a>`).join('')}</nav>
-${list}`
+<p class="frame">Кроме федеральных линий и фондов, у каждого региона есть свой уполномоченный по правам ребёнка, комиссии, кризисные центры и меры поддержки семей. Выберите регион — на его странице всё сразу: телефоны, почта, адреса. Данные наполняются постепенно; помеченные ⚠️ контакты сверяйте с официальными сайтами.</p>
+<nav class="sec-nav">${REGIONS.map((r) => `<a class="sec-chip" href="${regionUrl(r)}">${esc(r.tag)}</a>`).join('')}</nav>
+<ul class="sec-list">${cards}</ul>`
 
   return layout({
     title: `Региональные контакты помощи детям — уполномоченные, кризисные центры — ${SITE.name}`,
@@ -887,7 +893,31 @@ ${list}`
       'Куда обращаться в вашем регионе: уполномоченный по правам ребёнка, КДН и опека, кризисные центры, региональные меры поддержки семей. Москва, Московская область, Санкт-Петербург и города-миллионники.',
     canonicalPath: '/regiony/',
     bodyClass: 'page-regiony',
-    jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Регионы', url: '/regiony/' }])],
+    jsonLd: [breadcrumbLd(crumbs)],
+    main,
+  })
+}
+
+function renderRegionPage(r) {
+  const crumbs = [
+    { name: 'Главная', url: '/' },
+    { name: 'Регионы', url: '/regiony/' },
+    { name: r.tag, url: regionUrl(r) },
+  ]
+  const main = `
+${breadcrumbs(crumbs)}
+<h1>${esc(r.name)}: контакты для родителей и детей</h1>
+${r.note ? `<p class="frame">${esc(r.note)}</p>` : ''}
+<p class="rf-note">Детский телефон доверия <a href="tel:+78002000122">8&nbsp;800&nbsp;2000&nbsp;122</a> работает и здесь — круглосуточно, бесплатно, анонимно.</p>
+<ul class="contact-list">${r.contacts.map(regionContactHtml).join('')}</ul>
+<p class="foot-disclaimer">Смотрите также: <a href="/regiony/">все регионы</a> и <a href="/kontakty/">федеральные контакты и службы</a>.</p>`
+
+  return layout({
+    title: `${r.name} — куда обращаться: уполномоченный по правам ребёнка, контакты — ${SITE.name}`,
+    description: `${r.name}: уполномоченный по правам ребёнка, куда обращаться, кризисные центры и меры поддержки семей. Телефоны, почта, адреса — кликабельно.`,
+    canonicalPath: regionUrl(r),
+    bodyClass: 'page-region',
+    jsonLd: [breadcrumbLd(crumbs)],
     main,
   })
 }
@@ -1339,6 +1369,7 @@ async function main() {
   routes.push(await writePage('/poisk/', renderSearch()))
   routes.push(await writePage('/moe/', renderMoe()))
   routes.push(await writePage('/regiony/', renderRegiony()))
+  for (const r of REGIONS) routes.push(await writePage(regionUrl(r), renderRegionPage(r)))
   routes.push(await writePage('/vse-temy/', renderVseTemy()))
   routes.push(await writePage('/novosti/', renderNovosti()))
   for (const n of NEWS) routes.push(await writePage(newsItemUrl(n), renderNewsItem(n)))

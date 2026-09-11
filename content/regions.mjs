@@ -30,6 +30,7 @@
 /**
  * @typedef {Object} Region
  * @property {string} id       Совпадает по смыслу с кодом Vercel `x-vercel-ip-country-region` где возможно
+ * @property {string} slug     Для URL страницы региона: /regiony/<slug>/
  * @property {string} name     Полное название субъекта
  * @property {string} tag      Короткое имя (для чипа выбора)
  * @property {string[]} cities Города и синонимы для сопоставления по IP/названию
@@ -71,6 +72,7 @@ function howToFind(regionName) {
 export const REGIONS = [
   {
     id: 'MOW',
+    slug: 'moskva',
     name: 'Москва',
     tag: 'Москва',
     cities: ['москва', 'moscow', 'zelenograd', 'зеленоград', 'moskva'],
@@ -96,6 +98,7 @@ export const REGIONS = [
   },
   {
     id: 'MOS',
+    slug: 'moskovskaya-oblast',
     name: 'Московская область',
     tag: 'Московская обл.',
     cities: ['московская область', 'moscow oblast', 'подмосковье', 'балашиха', 'химки', 'подольск', 'королёв', 'мытищи', 'люберцы', 'красногорск', 'одинцово', 'домодедово', 'серпухов'],
@@ -114,6 +117,7 @@ export const REGIONS = [
   },
   {
     id: 'SPE',
+    slug: 'sankt-peterburg',
     name: 'Санкт-Петербург',
     tag: 'Санкт-Петербург',
     cities: ['санкт-петербург', 'saint petersburg', 'st petersburg', 'петербург', 'спб', 'питер', 'колпино', 'пушкин'],
@@ -140,6 +144,7 @@ export const REGIONS = [
   },
   {
     id: 'NVS',
+    slug: 'novosibirsk',
     name: 'Новосибирская область (Новосибирск)',
     tag: 'Новосибирск',
     cities: ['новосибирск', 'novosibirsk', 'новосибирская область'],
@@ -158,6 +163,7 @@ export const REGIONS = [
   },
   {
     id: 'SVE',
+    slug: 'ekaterinburg',
     name: 'Свердловская область (Екатеринбург)',
     tag: 'Екатеринбург',
     cities: ['екатеринбург', 'yekaterinburg', 'ekaterinburg', 'свердловская область'],
@@ -185,6 +191,7 @@ export const REGIONS = [
   },
   {
     id: 'TA',
+    slug: 'kazan',
     name: 'Республика Татарстан (Казань)',
     tag: 'Казань',
     cities: ['казань', 'kazan', 'татарстан', 'tatarstan', 'набережные челны'],
@@ -203,6 +210,7 @@ export const REGIONS = [
   },
   {
     id: 'NIZ',
+    slug: 'nizhniy-novgorod',
     name: 'Нижегородская область (Нижний Новгород)',
     tag: 'Нижний Новгород',
     cities: ['нижний новгород', 'nizhny novgorod', 'нижегородская область'],
@@ -221,6 +229,7 @@ export const REGIONS = [
   },
   {
     id: 'CHE',
+    slug: 'chelyabinsk',
     name: 'Челябинская область (Челябинск)',
     tag: 'Челябинск',
     cities: ['челябинск', 'chelyabinsk', 'челябинская область', 'магнитогорск'],
@@ -239,6 +248,7 @@ export const REGIONS = [
   },
   {
     id: 'KYA',
+    slug: 'krasnoyarsk',
     name: 'Красноярский край (Красноярск)',
     tag: 'Красноярск',
     cities: ['красноярск', 'krasnoyarsk', 'красноярский край'],
@@ -257,6 +267,7 @@ export const REGIONS = [
   },
   {
     id: 'SAM',
+    slug: 'samara',
     name: 'Самарская область (Самара)',
     tag: 'Самара',
     cities: ['самара', 'samara', 'самарская область', 'тольятти'],
@@ -275,6 +286,7 @@ export const REGIONS = [
   },
   {
     id: 'BA',
+    slug: 'ufa',
     name: 'Республика Башкортостан (Уфа)',
     tag: 'Уфа',
     cities: ['уфа', 'ufa', 'башкортостан', 'башкирия'],
@@ -293,6 +305,7 @@ export const REGIONS = [
   },
   {
     id: 'ROS',
+    slug: 'rostov-na-donu',
     name: 'Ростовская область (Ростов-на-Дону)',
     tag: 'Ростов-на-Дону',
     cities: ['ростов-на-дону', 'rostov-on-don', 'rostov', 'ростов', 'ростовская область'],
@@ -311,6 +324,7 @@ export const REGIONS = [
   },
   {
     id: 'KDA',
+    slug: 'krasnodar',
     name: 'Краснодарский край (Краснодар)',
     tag: 'Краснодар',
     cities: ['краснодар', 'krasnodar', 'краснодарский край', 'сочи'],
@@ -329,6 +343,7 @@ export const REGIONS = [
   },
   {
     id: 'OMS',
+    slug: 'omsk',
     name: 'Омская область (Омск)',
     tag: 'Омск',
     cities: ['омск', 'omsk', 'омская область'],
@@ -347,6 +362,7 @@ export const REGIONS = [
   },
   {
     id: 'VOR',
+    slug: 'voronezh',
     name: 'Воронежская область (Воронеж)',
     tag: 'Воронеж',
     cities: ['воронеж', 'voronezh', 'воронежская область'],
@@ -365,6 +381,7 @@ export const REGIONS = [
   },
   {
     id: 'PER',
+    slug: 'perm',
     name: 'Пермский край (Пермь)',
     tag: 'Пермь',
     cities: ['пермь', 'perm', 'пермский край'],
@@ -383,6 +400,7 @@ export const REGIONS = [
   },
   {
     id: 'VGG',
+    slug: 'volgograd',
     name: 'Волгоградская область (Волгоград)',
     tag: 'Волгоград',
     cities: ['волгоград', 'volgograd', 'волгоградская область'],

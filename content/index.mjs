@@ -50,6 +50,10 @@ export function sectionUrl(section) {
   return `/${section.slug}/`
 }
 
+export function regionUrl(region) {
+  return `/regiony/${region.slug}/`
+}
+
 export function topicsOfSection(sectionId) {
   return TOPICS.filter((t) => t.sectionId === sectionId)
 }
@@ -65,6 +69,12 @@ export function validateContent() {
     for (const c of t.contacts || []) {
       if (!CONTACTS_BY_ID[c]) errors.push(`Тема "${t.slug}": неизвестный контакт "${c}"`)
     }
+  }
+  const regionSlugs = new Set()
+  for (const r of REGIONS) {
+    if (!r.slug) errors.push(`Регион "${r.id}": нет slug`)
+    if (regionSlugs.has(r.slug)) errors.push(`Дублирующийся slug региона: "${r.slug}"`)
+    regionSlugs.add(r.slug)
   }
   return errors
 }
