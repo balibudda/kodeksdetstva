@@ -74,8 +74,38 @@ const esc = (s = '') =>
 
 const attr = (s = '') => esc(s).replaceAll("'", '&#39;')
 
+const xmlEsc = (s = '') =>
+  String(s)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+
 function telHref(tel) {
   return 'tel:' + String(tel).replace(/[^\d+]/g, '')
+}
+
+// ─── транслитерация для авто-слагов новостей (когда бот не задал свой) ──
+const TRANSLIT_MAP = {
+  а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'e', ж: 'zh', з: 'z',
+  и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o', п: 'p', р: 'r',
+  с: 's', т: 't', у: 'u', ф: 'f', х: 'h', ц: 'c', ч: 'ch', ш: 'sh', щ: 'sch',
+  ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu', я: 'ya',
+}
+function slugify(s) {
+  return String(s)
+    .toLowerCase()
+    .split('')
+    .map((ch) => (ch in TRANSLIT_MAP ? TRANSLIT_MAP[ch] : ch))
+    .join('')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60)
+}
+function newsItemSlug(item) {
+  return item.slug || `${item.date}-${slugify(item.title)}`
+}
+function newsItemUrl(item) {
+  return `/novosti/${newsItemSlug(item)}/`
 }
 
 // ─── контакт → HTML ─────────────────────────────────────────────
@@ -173,6 +203,7 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
 <meta name="theme-color" content="#3a6b5f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="${attr(SITE.name)}">
+<link rel="alternate" type="application/rss+xml" title="${attr(SITE.name)} — новости" href="/novosti/rss.xml">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -789,29 +820,35 @@ ${list}`
   })
 }
 
+function newsRelatedHtml(n) {
+  const rel = (n.relatedTopics || [])
+    .map((slug) => TOPICS_BY_SLUG[slug])
+    .filter(Boolean)
+    .map((t) => `<a href="${topicUrl(t)}">${esc(t.title)}</a>`)
+    .join(', ')
+  return rel ? `<p class="news-related">Читать по теме: ${rel}</p>` : ''
+}
+
 function renderNovosti() {
   const sorted = NEWS.slice().sort((a, b) => (a.date < b.date ? 1 : -1))
   const list = sorted
-    .map((n) => {
-      const rel = (n.relatedTopics || [])
-        .map((slug) => TOPICS_BY_SLUG[slug])
-        .filter(Boolean)
-        .map((t) => `<a href="${topicUrl(t)}">${esc(t.title)}</a>`)
-        .join(', ')
-      return `<li class="news-item">
-        <p class="news-date">${esc(n.date)}</p>
-        <h2>${esc(n.title)}</h2>
-        <p>${esc(n.summary)}</p>
-        <p class="news-source">Источник: <a href="${attr(n.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(n.sourceName)}</a></p>
-        ${rel ? `<p class="news-related">Читать по теме: ${rel}</p>` : ''}
-      </li>`
-    })
+    .map(
+      (n) => `<li class="news-item">
+        <a href="${newsItemUrl(n)}">
+          <p class="news-date">${esc(n.date)}</p>
+          <h2>${esc(n.title)}</h2>
+          <p>${esc(n.summary)}</p>
+          <span class="news-open">Читать целиком →</span>
+        </a>
+      </li>`,
+    )
     .join('')
 
   const main = `
 ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Новости', url: '/novosti/' }])}
 <h1>Новости: законы и государственные инициативы о детях</h1>
 <p class="frame">Только законодательство — новые законы, поправки, официальные инициативы профильных ведомств и Госдумы, касающиеся детей. Без криминальной хроники и трагедий: этого на сайте сознательно нет. У каждой новости — прямая ссылка на первоисточник, проверяйте актуальность там же.</p>
+<p class="news-subscribe"><a class="btn btn-ghost" href="/novosti/rss.xml">📶 Подписаться (RSS)</a> — добавьте ссылку в любой RSS-читалку (Inoreader, Feedly и т. п.), новые записи будут приходить туда автоматически.</p>
 ${sorted.length ? `<ul class="news-list">${list}</ul>` : '<p class="news-empty">Пока новостей нет — раздел новый, наполняется по мере появления значимых изменений в законодательстве.</p>'}`
 
   return layout({
@@ -822,6 +859,70 @@ ${sorted.length ? `<ul class="news-list">${list}</ul>` : '<p class="news-empty">
     jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Новости', url: '/novosti/' }])],
     main,
   })
+}
+
+function renderNewsItem(n) {
+  const main = `
+${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Новости', url: '/novosti/' }, { name: n.title, url: newsItemUrl(n) }])}
+<article>
+  <p class="news-date">${esc(n.date)}</p>
+  <h1>${esc(n.title)}</h1>
+  <p>${esc(n.summary)}</p>
+  <p class="news-source">Источник: <a href="${attr(n.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(n.sourceName)}</a></p>
+  ${newsRelatedHtml(n)}
+</article>
+<p><a href="/novosti/">← Все новости</a></p>`
+
+  return layout({
+    title: `${n.title} — Новости — ${SITE.name}`,
+    description: n.summary.slice(0, 170),
+    canonicalPath: newsItemUrl(n),
+    bodyClass: 'page-news-item',
+    jsonLd: [
+      breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Новости', url: '/novosti/' }, { name: n.title, url: newsItemUrl(n) }]),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        headline: n.title,
+        description: n.summary,
+        datePublished: n.date,
+        inLanguage: 'ru-RU',
+        mainEntityOfPage: SITE.origin + newsItemUrl(n),
+        publisher: orgNode(),
+        isAccessibleForFree: true,
+      },
+    ],
+    main,
+  })
+}
+
+function buildNewsRss() {
+  const sorted = NEWS.slice().sort((a, b) => (a.date < b.date ? 1 : -1))
+  const items = sorted
+    .map((n) => {
+      const url = SITE.origin + newsItemUrl(n)
+      const pubDate = new Date(n.date + 'T09:00:00Z').toUTCString()
+      return `  <item>
+    <title>${xmlEsc(n.title)}</title>
+    <link>${xmlEsc(url)}</link>
+    <guid isPermaLink="true">${xmlEsc(url)}</guid>
+    <pubDate>${pubDate}</pubDate>
+    <description>${xmlEsc(n.summary)}</description>
+  </item>`
+    })
+    .join('\n')
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>${xmlEsc(SITE.name)} — новости о законах и детях</title>
+  <link>${xmlEsc(SITE.origin + '/novosti/')}</link>
+  <description>Новые законы, поправки и государственные инициативы, касающиеся детей и семьи в России. Без криминальной хроники — только законодательство.</description>
+  <language>ru</language>
+${items}
+</channel>
+</rss>
+`
 }
 
 function renderAbout() {
@@ -1131,6 +1232,8 @@ async function main() {
   routes.push(await writePage('/moe/', renderMoe()))
   routes.push(await writePage('/regiony/', renderRegiony()))
   routes.push(await writePage('/novosti/', renderNovosti()))
+  for (const n of NEWS) routes.push(await writePage(newsItemUrl(n), renderNewsItem(n)))
+  await writeFile(path.join(DIST, 'novosti', 'rss.xml'), buildNewsRss(), 'utf8')
   for (const s of SECTIONS) routes.push(await writePage(sectionUrl(s), renderSection(s)))
   for (const t of TOPICS) routes.push(await writePage(topicUrl(t), renderTopic(t)))
 

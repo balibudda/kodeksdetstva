@@ -128,7 +128,8 @@ export default async function handler(req, res) {
     res.status(500).json({ ok: false, error: 'TELEGRAM_BOT_TOKEN not set' })
     return
   }
-  if (SECRET && req.headers['x-telegram-bot-api-secret-token'] !== SECRET) {
+  // fail closed: если секрет не настроен — отклоняем, а не пропускаем всех подряд
+  if (!SECRET || req.headers['x-telegram-bot-api-secret-token'] !== SECRET) {
     res.status(401).json({ ok: false })
     return
   }
