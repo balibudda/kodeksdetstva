@@ -1,0 +1,33 @@
+name: Ежедневная проверка новостей о законах (дети/семья)
+
+on:
+  schedule:
+    - cron: '11 6 * * *' # ежедневно, ~13:11 Bangkok
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: daily-news-check
+  cancel-in-progress: false
+
+jobs:
+  news-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Прочитай и полностью выполни инструкции из файла
+            instructions/news-check-prompt.md в корне этого репозитория —
+            это вся сегодняшняя задача. Строго следуй правилам про источники
+            (не добавлять пункт без реальной проверяемой ссылки) и про то,
+            что пустой день — нормальный исход (не публиковать пустышку).
+          claude_args: |
+            --allowedTools "Read,Write,Edit,Bash,WebSearch,WebFetch,Glob,Grep"
+            --max-turns 40

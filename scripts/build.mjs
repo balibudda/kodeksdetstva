@@ -20,6 +20,7 @@ import {
   topicsOfSection,
   validateContent,
 } from '../content/index.mjs'
+import { NEWS } from '../content/news.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..')
@@ -202,6 +203,7 @@ ${ld}
           <li><a href="/kontakty/">📞 Все контакты</a></li>
           <li><a href="/poisk/">🔎 Поиск по ситуации</a></li>
           <li><a href="/regiony/">📍 Регионы</a></li>
+          <li><a href="/novosti/">📰 Новости</a></li>
           <li><a href="/moe/">⭐ Моё (закладки и история)</a></li>
           <li><a href="/o-proekte/">О проекте</a></li>
           <li><a href="/politika/">Политика обработки данных</a></li>
@@ -227,6 +229,7 @@ ${main}
     <a href="/poisk/">Поиск</a>
     <a href="/moe/">Моё</a>
     <a href="/regiony/">Регионы</a>
+    <a href="/novosti/">Новости</a>
     <a href="/o-proekte/">О проекте</a>
   </nav>
   <div class="foot-contacts">
@@ -786,6 +789,41 @@ ${list}`
   })
 }
 
+function renderNovosti() {
+  const sorted = NEWS.slice().sort((a, b) => (a.date < b.date ? 1 : -1))
+  const list = sorted
+    .map((n) => {
+      const rel = (n.relatedTopics || [])
+        .map((slug) => TOPICS_BY_SLUG[slug])
+        .filter(Boolean)
+        .map((t) => `<a href="${topicUrl(t)}">${esc(t.title)}</a>`)
+        .join(', ')
+      return `<li class="news-item">
+        <p class="news-date">${esc(n.date)}</p>
+        <h2>${esc(n.title)}</h2>
+        <p>${esc(n.summary)}</p>
+        <p class="news-source">Источник: <a href="${attr(n.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(n.sourceName)}</a></p>
+        ${rel ? `<p class="news-related">Читать по теме: ${rel}</p>` : ''}
+      </li>`
+    })
+    .join('')
+
+  const main = `
+${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Новости', url: '/novosti/' }])}
+<h1>Новости: законы и государственные инициативы о детях</h1>
+<p class="frame">Только законодательство — новые законы, поправки, официальные инициативы профильных ведомств и Госдумы, касающиеся детей. Без криминальной хроники и трагедий: этого на сайте сознательно нет. У каждой новости — прямая ссылка на первоисточник, проверяйте актуальность там же.</p>
+${sorted.length ? `<ul class="news-list">${list}</ul>` : '<p class="news-empty">Пока новостей нет — раздел новый, наполняется по мере появления значимых изменений в законодательстве.</p>'}`
+
+  return layout({
+    title: `Новости: законы и инициативы о детях — ${SITE.name}`,
+    description: 'Новые законы, поправки и государственные инициативы, касающиеся детей и семьи в России. Без криминальной хроники — только законодательство, со ссылками на первоисточники.',
+    canonicalPath: '/novosti/',
+    bodyClass: 'page-novosti',
+    jsonLd: [breadcrumbLd([{ name: 'Главная', url: '/' }, { name: 'Новости', url: '/novosti/' }])],
+    main,
+  })
+}
+
 function renderAbout() {
   const main = `
 ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'О проекте', url: '/o-proekte/' }])}
@@ -1092,6 +1130,7 @@ async function main() {
   routes.push(await writePage('/poisk/', renderSearch()))
   routes.push(await writePage('/moe/', renderMoe()))
   routes.push(await writePage('/regiony/', renderRegiony()))
+  routes.push(await writePage('/novosti/', renderNovosti()))
   for (const s of SECTIONS) routes.push(await writePage(sectionUrl(s), renderSection(s)))
   for (const t of TOPICS) routes.push(await writePage(topicUrl(t), renderTopic(t)))
 

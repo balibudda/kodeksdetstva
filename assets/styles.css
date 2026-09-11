@@ -416,3 +416,10 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 .ask-question { margin-top: 18px; padding: 14px 16px; border: 1px dashed var(--line); border-radius: 12px; background: var(--surface); }
 .ask-question p { margin: 0 0 10px; color: var(--ink-soft); font-size: 14.5px; }
 .ask-question .btn { display: inline-flex; }
+
+.news-list { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.news-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.news-item h2 { margin: 2px 0 8px; font-size: 18px; }
+.news-date { margin: 0; font-size: 13px; color: var(--ink-soft); font-weight: 700; }
+.news-source, .news-related { font-size: 14px; color: var(--ink-soft); margin: 8px 0 0; }
+.news-empty { color: var(--ink-soft); margin-top: 18px; }
