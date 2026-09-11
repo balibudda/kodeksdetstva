@@ -446,6 +446,9 @@ h2 { font-size: calc(19px * var(--fs, 1)); margin: 24px 0 10px; overflow-wrap: b
 /* search */
 .search-form input { width: 100%; font: inherit; font-size: calc(17px * var(--fs, 1)); padding: 13px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
 .search-form input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.region-search { margin: 14px 0 6px; }
+.region-search input { width: 100%; font: inherit; font-size: calc(16px * var(--fs, 1)); padding: 11px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.region-search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .home-search { margin: 0; }
 /* заметная рамка поиска на главной — между hero и разделами */
 .home-search-box {

@@ -867,7 +867,7 @@ function regionContactHtml(c) {
 
 function renderRegiony() {
   const cards = REGIONS.map(
-    (r) => `<li class="sec-card">
+    (r) => `<li class="sec-card" data-q="${attr((r.name + ' ' + r.tag + ' ' + r.cities.join(' ')).toLowerCase())}">
       <a class="sec-card-head" href="${regionUrl(r)}">
         <span class="sec-card-txt">
           <span class="sec-title">${esc(r.name)}</span>
@@ -882,10 +882,12 @@ function renderRegiony() {
   const crumbs = [{ name: 'Главная', url: '/' }, { name: 'Регионы', url: '/regiony/' }]
   const main = `
 ${breadcrumbs(crumbs)}
-<h1>Региональные контакты: города-миллионники, Москва и Московская область</h1>
+<h1>Региональные контакты (${REGIONS.length})</h1>
 <p class="frame">Кроме федеральных линий и фондов, у каждого региона есть свой уполномоченный по правам ребёнка, комиссии, кризисные центры и меры поддержки семей. Выберите регион — на его странице всё сразу: телефоны, почта, адреса. Данные наполняются постепенно; помеченные ⚠️ контакты сверяйте с официальными сайтами.</p>
-<nav class="sec-nav">${REGIONS.map((r) => `<a class="sec-chip" href="${regionUrl(r)}">${esc(r.tag)}</a>`).join('')}</nav>
-<ul class="sec-list">${cards}</ul>`
+<div class="region-search"><input type="search" id="region-filter" placeholder="Найти регион или город…" autocomplete="off" aria-label="Найти регион"></div>
+<p id="region-filter-empty" class="search-empty" hidden>Ничего не нашлось — попробуйте другое название.</p>
+<nav class="sec-nav" id="region-chips">${REGIONS.map((r) => `<a class="sec-chip" href="${regionUrl(r)}" data-q="${attr((r.name + ' ' + r.tag).toLowerCase())}">${esc(r.tag)}</a>`).join('')}</nav>
+<ul class="sec-list" id="region-cards">${cards}</ul>`
 
   return layout({
     title: `Региональные контакты помощи детям — уполномоченные, кризисные центры — ${SITE.name}`,

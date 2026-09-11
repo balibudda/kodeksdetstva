@@ -413,6 +413,30 @@
     })
   })
 
+  // Поиск по регионам на /regiony/: простой фильтр по подстроке, без индекса —
+  // список небольшой, полнотекстовый search.js тут избыточен.
+  var regionFilter = document.getElementById('region-filter')
+  if (regionFilter) {
+    var rChips = document.querySelectorAll('#region-chips [data-q]')
+    var rCards = document.querySelectorAll('#region-cards [data-q]')
+    var rEmpty = document.getElementById('region-filter-empty')
+    regionFilter.addEventListener('input', function () {
+      var q = regionFilter.value.trim().toLowerCase()
+      var shown = 0
+      function apply(list) {
+        for (var i = 0; i < list.length; i++) {
+          var match = !q || list[i].getAttribute('data-q').indexOf(q) !== -1
+          list[i].hidden = !match
+          if (match) shown++
+        }
+      }
+      apply(rChips)
+      shown = 0
+      apply(rCards)
+      if (rEmpty) rEmpty.hidden = shown > 0
+    })
+  }
+
   // Размер текста A-/A+: множитель --fs на <html>, шаг 0.1 в пределах 0.8–1.4.
   // Запоминается в localStorage и применяется сразу при заходе на любую
   // страницу (см. ранний инлайн-скрипт в <head> в scripts/build.mjs —
