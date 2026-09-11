@@ -1,0 +1,11 @@
+Golos Text
+Copyright 2020 The Golos Text Project Authors (https://github.com/googlefonts/golos-text)
+Designed by Alexandra Korolkova and Vitaly Kuzmin, released by ParaType.
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+Full text: https://openfontlicense.org / https://scripts.sil.org/OFL
+
+Файлы golos-cyrillic.woff2 / golos-latin.woff2 — подмножества (кириллица и
+латиница) переменного начертания (wght 400–900), полученные с Google Fonts
+(fonts.googleapis.com/css2?family=Golos+Text) и захостены локально в этом
+репозитории, без изменений содержимого шрифта.

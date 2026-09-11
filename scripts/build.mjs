@@ -21,6 +21,7 @@ import {
   validateContent,
 } from '../content/index.mjs'
 import { NEWS } from '../content/news.mjs'
+import { sectionIconSvg } from '../content/icons.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..')
@@ -268,7 +269,7 @@ ${ld}
         <ul>
           ${SECTIONS.map(
             (s) =>
-              `<li><a href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="menu-i" aria-hidden="true">${s.icon}</span> ${esc(s.title)} <b>${topicsOfSection(s.id).length}</b></a></li>`,
+              `<li><a href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="menu-i">${sectionIconSvg(s.id, 18)}</span> ${esc(s.title)} <b>${topicsOfSection(s.id).length}</b></a></li>`,
           ).join('')}
         </ul>
         <p class="menu-h">Ещё</p>
@@ -358,7 +359,7 @@ function breadcrumbs(items) {
   // items: [{name, url, icon?}] последний — текущая страница без ссылки
   const parts = items
     .map((it, i) => {
-      const label = (it.icon ? `<span aria-hidden="true">${it.icon}</span> ` : '') + esc(it.name)
+      const label = (it.icon ? `<span class="crumb-ic">${it.icon}</span> ` : '') + esc(it.name)
       return it.url && i < items.length - 1
         ? `<a href="${attr(it.url)}">${label}</a>`
         : `<span aria-current="page">${label}</span>`
@@ -386,7 +387,7 @@ function renderHome() {
     (s) => `<li class="sec-card" style="--sec:${s.accent}">
       <a class="sec-card-head" href="${sectionUrl(s)}">
         <span class="sec-card-txt">
-          <span class="sec-title"><span class="sec-emoji" aria-hidden="true">${s.icon}</span> ${esc(s.title)}</span>
+          <span class="sec-title"><span class="sec-emoji">${sectionIconSvg(s.id, 20)}</span> ${esc(s.title)}</span>
           <span class="sec-lead">${esc(s.lead)}</span>
           <span class="sec-open">Все темы раздела (${topicsOfSection(s.id).length}) →</span>
         </span>
@@ -401,6 +402,12 @@ function renderHome() {
 
   const main = `
 <section class="hero">
+  <svg class="hero-deco" width="280" height="280" viewBox="0 0 280 280" aria-hidden="true" focusable="false">
+    <circle cx="230" cy="40" r="150" fill="currentColor" opacity=".07"/>
+    <circle cx="250" cy="90" r="90" fill="currentColor" opacity=".09"/>
+    <circle cx="190" cy="10" r="50" fill="currentColor" opacity=".12"/>
+  </svg>
+  <div class="hero-content">
   <h1>${esc(SITE.name)} — ${esc(SITE.tagline)}</h1>
   <p class="hero-lead">Понятные разборы трудных ситуаций — и для родителей, и для самих подростков.
   Что происходит, что говорит закон, что делать по шагам и куда обратиться. По каждой теме — отдельная страница со своим адресом, её можно сохранить в закладки и переслать.</p>
@@ -412,6 +419,13 @@ function renderHome() {
     <a class="btn" href="/tebe/">🧒 Ты подросток? Тебе сюда</a>
   </div>
   <p class="hero-flag"><span class="ic">🚩</span> Внутри тем помечены <b>красные флаги</b> — сигналы, при которых нельзя ждать: дальше может быть очень плохо.</p>
+  </div>
+</section>
+<section class="home-stats" aria-label="Масштаб проекта">
+  <div class="stat"><b>${TOPICS.length}</b><span>разобранных тем</span></div>
+  <div class="stat"><b>${SECTIONS.length}</b><span>разделов</span></div>
+  <div class="stat"><b>${CONTACTS.length}</b><span>федеральных контактов</span></div>
+  <div class="stat"><b>${REGIONS.length}</b><span>регионов</span></div>
 </section>
 <section class="home-search-box" aria-label="Поиск по ситуации">
   <h2>🔎 Найдите свою ситуацию</h2>
@@ -424,7 +438,7 @@ function renderHome() {
 <h2 class="sec-h">Разделы</h2>
 <nav class="sec-nav" aria-label="Быстрый переход по разделам">
   ${SECTIONS.map(
-    (s) => `<a class="sec-chip" href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="sec-chip-i" aria-hidden="true">${s.icon}</span><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
+    (s) => `<a class="sec-chip" href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="sec-chip-i">${sectionIconSvg(s.id, 16)}</span><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
   ).join('')}
 </nav>
 <h2 class="sec-h">Разделы — подробно</h2>
@@ -492,7 +506,7 @@ function renderSection(s) {
 
   const main = `
 ${breadcrumbs(crumbs)}
-<h1><span class="sec-emoji" aria-hidden="true">${s.icon}</span> ${esc(s.title)}</h1>
+<h1><span class="sec-emoji">${sectionIconSvg(s.id, 26)}</span> ${esc(s.title)}</h1>
 <p class="frame">${esc(s.frame)}</p>
 <ul class="topic-list">${list}</ul>`
 
@@ -511,7 +525,7 @@ function renderTopic(t) {
   const s = SECTIONS_BY_ID[t.sectionId]
   const crumbs = [
     { name: 'Главная', url: '/' },
-    { name: s.title, url: sectionUrl(s), icon: s.icon },
+    { name: s.title, url: sectionUrl(s), icon: sectionIconSvg(s.id, 14) },
     { name: t.title, url: topicUrl(t) },
   ]
 
@@ -1316,6 +1330,8 @@ async function main() {
     '/assets/search.js' + V,
     '/assets/nav.js' + V,
     '/assets/tg.js' + V,
+    '/assets/fonts/golos-cyrillic.woff2',
+    '/assets/fonts/golos-latin.woff2',
     '/search-index.json',
     '/regions.json',
     '/favicon.svg',
