@@ -289,6 +289,7 @@ ${ld}
           <li><a href="/kontakty/">📞 Все контакты</a></li>
           <li><a href="/poisk/">🔎 Поиск по ситуации</a></li>
           <li><a href="/regiony/">📍 Регионы</a></li>
+          <li><a href="/vse-temy/">📚 Все темы</a></li>
           <li><a href="/novosti/">📰 Новости</a></li>
           <li><a href="/moe/">⭐ Моё (закладки и история)</a></li>
           <li><a href="/o-proekte/">О проекте</a></li>
@@ -436,7 +437,7 @@ function renderHome() {
   </div>
 </section>
 <section class="home-stats" aria-label="Масштаб проекта">
-  <a class="stat" href="/poisk/"><b>${TOPICS.length}</b><span>разобранных тем</span></a>
+  <a class="stat" href="/vse-temy/"><b>${TOPICS.length}</b><span>разобранных тем</span></a>
   <a class="stat" href="#razdely"><b>${SECTIONS.length}</b><span>разделов</span></a>
   <a class="stat" href="/kontakty/"><b>${CONTACTS.length}</b><span>федеральных контактов</span></a>
   <a class="stat" href="/regiony/"><b>${REGIONS.length}</b><span>регионов</span></a>
@@ -1185,6 +1186,33 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Поиск', url: 
   })
 }
 
+function renderVseTemy() {
+  const rows = TOPICS.map((t, i) => {
+    const s = SECTIONS_BY_ID[t.sectionId]
+    return `<li style="--sec:${s.accent}"><span class="vt-n">${i + 1}</span><a href="${topicUrl(t)}"><span class="vt-ic">${sectionIconSvg(s.id, 15)}</span>${esc(t.title)}</a>${t.urgent ? ' <b class="u">срочное</b>' : ''}</li>`
+  }).join('')
+
+  const crumbs = [
+    { name: 'Главная', url: '/' },
+    { name: 'Все темы', url: '/vse-temy/' },
+  ]
+
+  const main = `
+${breadcrumbs(crumbs)}
+<h1>Все темы сайта — ${TOPICS.length}</h1>
+<p class="frame">Честный список без фильтров и поиска: все темы сайта пронумерованы от 1 до ${TOPICS.length}, каждое название — рабочая ссылка на саму тему. Появятся новые — список продолжится дальше, старые номера не меняются.</p>
+<ol class="vse-temy-list">${rows}</ol>`
+
+  return layout({
+    title: `Все темы сайта (${TOPICS.length}) — ${SITE.name}`,
+    description: `Полный пронумерованный список всех ${TOPICS.length} тем сайта «${SITE.name}» — с прямой ссылкой на каждую.`,
+    canonicalPath: '/vse-temy/',
+    bodyClass: 'page-vse-temy',
+    jsonLd: [breadcrumbLd(crumbs)],
+    main,
+  })
+}
+
 function renderMoe() {
   const main = `
 ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Моё', url: '/moe/' }])}
@@ -1311,6 +1339,7 @@ async function main() {
   routes.push(await writePage('/poisk/', renderSearch()))
   routes.push(await writePage('/moe/', renderMoe()))
   routes.push(await writePage('/regiony/', renderRegiony()))
+  routes.push(await writePage('/vse-temy/', renderVseTemy()))
   routes.push(await writePage('/novosti/', renderNovosti()))
   for (const n of NEWS) routes.push(await writePage(newsItemUrl(n), renderNewsItem(n)))
   await writeFile(path.join(DIST, 'novosti', 'rss.xml'), buildNewsRss(), 'utf8')
