@@ -140,4 +140,32 @@ const jobs = [
 for (const [name, size, maskable] of jobs) {
   writeFileSync(path.join(OUT, name), render(size, maskable))
 }
-console.log('Иконки: ' + jobs.map((j) => j[0]).join(', '))
+
+// ─── favicon.ico ──────────────────────────────────────────────
+// Классический .ico в корне сайта — часть поисковиков (в т. ч. Яндекс) и
+// старые краулеры проверяют его отдельно от <link rel="icon">. Формат ICO
+// с Windows Vista умеет хранить кадры прямо как PNG (не только BMP/DIB) —
+// этим и пользуемся, тот же PNG-кодек выше, без новой зависимости.
+const favSizes = [32, 16]
+const favPngs = favSizes.map((s) => render(s, false))
+// проставляем реальный размер в байты width/height каждой записи
+const icoHeader = Buffer.alloc(6)
+icoHeader.writeUInt16LE(0, 0)
+icoHeader.writeUInt16LE(1, 2)
+icoHeader.writeUInt16LE(favPngs.length, 4)
+let favOffset = 6 + 16 * favPngs.length
+const favEntries = favPngs.map((png, i) => {
+  const entry = Buffer.alloc(16)
+  entry[0] = favSizes[i] % 256
+  entry[1] = favSizes[i] % 256
+  entry.writeUInt16LE(1, 4)
+  entry.writeUInt16LE(32, 6)
+  entry.writeUInt32LE(png.length, 8)
+  entry.writeUInt32LE(favOffset, 12)
+  favOffset += png.length
+  return entry
+})
+const favicoBuf = Buffer.concat([icoHeader, ...favEntries, ...favPngs])
+writeFileSync(path.join(OUT, '..', 'favicon.ico'), favicoBuf)
+
+console.log('Иконки: ' + jobs.map((j) => j[0]).join(', ') + ', favicon.ico')
