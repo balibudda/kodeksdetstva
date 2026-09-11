@@ -820,6 +820,16 @@ ${list}`
   })
 }
 
+// Тизер для карточки в списке — примерно вдвое короче полного summary,
+// обрезка по границе слова, без разрыва посреди фразы.
+function newsTeaser(summary) {
+  const s = String(summary || '')
+  const target = Math.round(s.length / 2)
+  if (s.length <= target) return s
+  const cut = s.lastIndexOf(' ', target)
+  return s.slice(0, cut > 0 ? cut : target).replace(/[,;:.\s]+$/, '') + '…'
+}
+
 function newsRelatedHtml(n) {
   const rel = (n.relatedTopics || [])
     .map((slug) => TOPICS_BY_SLUG[slug])
@@ -837,7 +847,7 @@ function renderNovosti() {
         <a href="${newsItemUrl(n)}">
           <p class="news-date">${esc(n.date)}</p>
           <h2>${esc(n.title)}</h2>
-          <p>${esc(n.summary)}</p>
+          <p>${esc(newsTeaser(n.summary))}</p>
           <span class="news-open">Читать целиком →</span>
         </a>
       </li>`,
@@ -868,7 +878,7 @@ ${breadcrumbs([{ name: 'Главная', url: '/' }, { name: 'Новости', u
   <p class="news-date">${esc(n.date)}</p>
   <h1>${esc(n.title)}</h1>
   <p>${esc(n.summary)}</p>
-  <p class="news-source">Источник: <a href="${attr(n.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(n.sourceName)}</a></p>
+  <p class="news-source">Источник: <a href="${attr(n.sourceUrl)}" target="_blank" rel="nofollow noopener noreferrer">${esc(n.sourceName)}</a></p>
   ${newsRelatedHtml(n)}
 </article>
 <p><a href="/novosti/">← Все новости</a></p>`
