@@ -49,6 +49,18 @@ JS-объекты, без CMS и без базы:
 не упирался сразу в самое тяжёлое. Добавляя тему в уже тяжёлый раздел —
 подумайте, нужно ли её тоже поставить не в конец.
 
+**Иконки разделов — SVG, не эмодзи.** `content/icons.mjs` (`SECTION_ICONS` по
+`section.id`, не по `slug` — они не всегда совпадают, см. `sryv` = «Подросток
+и закон»; проверять через `SECTIONS.map(s => s.id)`, не угадывать по
+заголовку). `sectionIconSvg(id, size)` — `currentColor`, наследует цвет
+раздела через CSS (`var(--sec)` на обёртке). Новый раздел — сразу добавить
+иконку сюда, иначе `sectionIconSvg()` тихо вернёт `''` (пустая иконка, не
+ошибка сборки — эта дыра не ловится `validateContent()`).
+
+**Шрифт — Golos Text, самохостинг**, не Google Fonts CDN (`assets/fonts/*.woff2`
++ `@font-face` в `styles.css`, в PRECACHE service worker'а). Меняете шрифт —
+не забудьте обновить оба места и лицензионный файл `assets/fonts/OFL-LICENSE.txt`.
+
 **Внутренние ссылки `[[slug]]` / `[[slug|подпись]]`** — парсит `richText()` в
 `scripts/build.mjs`, применяется вместо `esc()` в `block()` (first/law/steps/
 say/dont) и в `sut`/`redFlags`. Если slug не существует в `TOPICS_BY_SLUG` —
