@@ -74,6 +74,30 @@ const esc = (s = '') =>
 
 const attr = (s = '') => esc(s).replaceAll("'", '&#39;')
 
+// ─── внутритекстовые ссылки на темы: [[slug]] или [[slug|видимый текст]] ──
+// Позволяет писать «см. тему [[suicidalnye-signaly|о суицидальных сигналах]]»
+// прямо в контенте и получать настоящую ссылку, а не мёртвый текст «см. отдельно».
+// Всё остальное экранируется как обычно через esc().
+function richText(s = '') {
+  const str = String(s)
+  const re = /\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g
+  let out = ''
+  let last = 0
+  let m
+  while ((m = re.exec(str))) {
+    out += esc(str.slice(last, m.index))
+    const [, slug, label] = m
+    const topic = TOPICS_BY_SLUG[slug]
+    if (!topic) {
+      throw new Error(`richText: неизвестный slug "${slug}" в тексте: "${str}"`)
+    }
+    out += `<a href="${topicUrl(topic)}">${esc(label || topic.title)}</a>`
+    last = re.lastIndex
+  }
+  out += esc(str.slice(last))
+  return out
+}
+
 const xmlEsc = (s = '') =>
   String(s)
     .replaceAll('&', '&amp;')
@@ -142,7 +166,7 @@ function renderContact(id) {
 function block(icon, title, items, { ordered = false, cls = '' } = {}) {
   if (!items || !items.length) return ''
   const tag = ordered ? 'ol' : 'ul'
-  const lis = items.map((x) => `<li>${esc(x)}</li>`).join('')
+  const lis = items.map((x) => `<li>${richText(x)}</li>`).join('')
   return `<section class="tblock ${cls}">
     <h2>${icon ? `<span class="ic" aria-hidden="true">${icon}</span> ` : ''}${esc(title)}</h2>
     <${tag}>${lis}</${tag}>
@@ -475,12 +499,12 @@ function renderTopic(t) {
     ? `<section class="tblock redflags" id="krasnye-flagi">
         <h2><span class="ic" aria-hidden="true">🚩</span> Красные флаги — не ждите, если это есть</h2>
         <p class="rf-note">Любой пункт ниже — повод действовать сегодня, а не «посмотреть, как будет». Дальше может быть очень плохо.</p>
-        <ul>${t.redFlags.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+        <ul>${t.redFlags.map((x) => `<li>${richText(x)}</li>`).join('')}</ul>
       </section>`
     : ''
 
   const sut = t.sut && t.sut.length
-    ? `<section class="tblock sut"><h2>Что происходит</h2>${t.sut.map((p) => `<p>${esc(p)}</p>`).join('')}</section>`
+    ? `<section class="tblock sut"><h2>Что происходит</h2>${t.sut.map((p) => `<p>${richText(p)}</p>`).join('')}</section>`
     : ''
 
   const lawQuotes = t.lawQuotes && t.lawQuotes.length
