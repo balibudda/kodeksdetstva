@@ -3,11 +3,6 @@
   "framework": null,
   "buildCommand": "node scripts/build.mjs",
   "outputDirectory": "dist",
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/google99be8f2cbe30fe89.html", "destination": "/api/verify?which=google" },
-    { "source": "/yandex_455271a3f17f26a4.html", "destination": "/api/verify?which=yandex" }
-  ],
   "redirects": [
     { "source": "/semya/materinskiy-kapital", "destination": "/semeynye-dela/materinskiy-kapital", "permanent": true },
     { "source": "/semya/materinskiy-kapital/", "destination": "/semeynye-dela/materinskiy-kapital", "permanent": true },
