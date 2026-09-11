@@ -79,7 +79,7 @@ export const TOPICS_LICHNOST = [
     sources: [
       'Семейный кодекс РФ, ст. 57; Конвенция ООН о правах ребёнка, ст. 12.',
     ],
-    related: ['granitsy-telo-privatnost', 'pravo-na-chuvstva', 'rebenok-instrument-v-razvode'],
+    related: ['granitsy-telo-privatnost', 'pravo-na-chuvstva', 'rebenok-instrument-v-razvode', 'mnogoyazychie-i-rechevoe-razvitie'],
   },
 
   {
@@ -244,7 +244,7 @@ export const TOPICS_LICHNOST = [
     ],
     contacts: ['deti-doverie', 'ya-roditel', 'psy-podrostok'],
     sources: ['Семейный кодекс РФ, ст. 65; ФЗ «Об образовании в РФ», ст. 34.'],
-    related: ['pravo-na-chuvstva', 'travlya-uchitel', 'rebenok-kak-proekt-roditelya', 'giperopeka'],
+    related: ['pravo-na-chuvstva', 'travlya-uchitel', 'rebenok-kak-proekt-roditelya', 'giperopeka', 'blagodarnost-i-radost-melocham'],
   },
 
   {
@@ -512,7 +512,7 @@ export const TOPICS_LICHNOST = [
       'Семейный кодекс РФ, ст. 57, 63, 65; Конвенция ООН о правах ребёнка, ст. 29.',
       'Данные о связи родительского «достигаторства» и жизни через ребёнка с тревожностью и выгоранием подростков — сверить конкретные исследования перед публикацией.',
     ],
-    related: ['giperopeka', 'religiya-i-prinuzhdenie', 'mnenie-rebenka', 'pravo-na-chuvstva', 'shkolnyy-stress'],
+    related: ['giperopeka', 'religiya-i-prinuzhdenie', 'mnenie-rebenka', 'pravo-na-chuvstva', 'shkolnyy-stress', 'mechty-i-celi-rebenka'],
   },
 
   {
@@ -653,7 +653,7 @@ export const TOPICS_LICHNOST = [
     sources: [
       'Конституция РФ, ст. 43; Семейный кодекс РФ, ст. 57; ФЗ «Об образовании в РФ» от 29.12.2012 № 273-ФЗ, ст. 44, 66, 75; Трудовой кодекс РФ, ст. 63.',
     ],
-    related: ['rebenok-kak-proekt-roditelya', 'mnenie-rebenka', 'uspeh-schaste-i-dengi', 'shkolnyy-stress', 'ekzameny-oge-ege'],
+    related: ['rebenok-kak-proekt-roditelya', 'mnenie-rebenka', 'uspeh-schaste-i-dengi', 'shkolnyy-stress', 'ekzameny-oge-ege', 'mechty-i-celi-rebenka'],
   },
 
   {

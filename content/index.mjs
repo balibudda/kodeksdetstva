@@ -5,6 +5,7 @@ import { CONTACTS, CONTACTS_BY_ID } from './contacts.mjs'
 import { REGIONS, REGIONS_BY_ID } from './regions.mjs'
 
 import { TOPICS_LICHNOST } from './topics/lichnost.mjs'
+import { TOPICS_RADOST_DETSTVA } from './topics/radost-detstva.mjs'
 import { TOPICS_SEMYA } from './topics/semya.mjs'
 import { TOPICS_SEMEYNYE_DELA } from './topics/semeynye-dela.mjs'
 import { TOPICS_SIROTSTVO } from './topics/sirotstvo.mjs'
@@ -22,6 +23,7 @@ import { TOPICS_PERVAYA_LYUBOV } from './topics/pervaya-lyubov.mjs'
 /** @type {import('./topics/lichnost.mjs').Topic[]} */
 export const TOPICS = [
   ...TOPICS_LICHNOST,
+  ...TOPICS_RADOST_DETSTVA,
   ...TOPICS_SEMYA,
   ...TOPICS_SEMEYNYE_DELA,
   ...TOPICS_SIROTSTVO,

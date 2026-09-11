@@ -173,6 +173,8 @@ h2 { font-size: 19px; margin: 24px 0 10px; overflow-wrap: break-word; }
 .hero { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
 .hero-lead { margin: 8px 0 14px; }
 .hero-lead2 { font-size: 15px; color: var(--ink-soft); margin-bottom: 16px; }
+.hero-lead3 { font-size: 15px; margin-bottom: 16px; }
+.hero-lead3 a { font-weight: 700; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 10px; }
 .btn { display: inline-block; text-decoration: none; font-weight: 700; padding: 11px 16px; border-radius: 999px; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); cursor: pointer; font: inherit; font-weight: 700; }
 .btn-danger { background: var(--danger); color: #fff; border-color: transparent; }

@@ -407,7 +407,7 @@ export const TOPICS_SEMYA = [
     ],
     contacts: ['ya-roditel', 'deti-doverie', 'psy-podrostok'],
     sources: ['Семейный кодекс РФ, ст. 57, 63, 65; Конвенция ООН о правах ребёнка, ст. 29.'],
-    related: ['rebenok-kak-proekt-roditelya', 'pravo-na-chuvstva', 'shkolnyy-stress', 'slezhka-i-kontrol'],
+    related: ['rebenok-kak-proekt-roditelya', 'pravo-na-chuvstva', 'shkolnyy-stress', 'slezhka-i-kontrol', 'svobodnaya-igra'],
   },
 
   {

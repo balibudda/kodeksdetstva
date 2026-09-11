@@ -376,7 +376,7 @@ export const TOPICS_VOSPITANIE = [
       'ФЗ «О рекламе», ст. 5, 27; УК РФ, ст. 151.',
       'Тема отражает запрос родителей на разговор с детьми о деньгах, соцсетях и «быстром успехе»; конкретные формулировки закона о рекламе сверить с действующей редакцией.',
     ],
-    related: ['zavisimost-ot-igr-i-stavok', 'karmannye-dengi', 'finansovye-lovushki', 'rebenok-kak-proekt-roditelya'],
+    related: ['zavisimost-ot-igr-i-stavok', 'karmannye-dengi', 'finansovye-lovushki', 'rebenok-kak-proekt-roditelya', 'blagodarnost-i-radost-melocham'],
   },
 
   {
@@ -443,7 +443,7 @@ export const TOPICS_VOSPITANIE = [
     sources: [
       'ФЗ «Об образовании в РФ» от 29.12.2012 № 273-ФЗ, ст. 34, 43, 75; Семейный кодекс РФ, ст. 57; акты о персонифицированном финансировании дополнительного образования детей (федеральный проект и региональные нормативные акты).',
     ],
-    related: ['vybor-professii', 'rebenok-kak-proekt-roditelya', 'shkolnyy-stress', 'uspeh-schaste-i-dengi', 'mnogodetnaya-semya'],
+    related: ['vybor-professii', 'rebenok-kak-proekt-roditelya', 'shkolnyy-stress', 'uspeh-schaste-i-dengi', 'mnogodetnaya-semya', 'svobodnaya-igra'],
   },
 
   {
@@ -512,7 +512,7 @@ export const TOPICS_VOSPITANIE = [
     sources: [
       'ФЗ «О физической культуре и спорте в Российской Федерации» от 04.12.2007 № 329-ФЗ, ст. 3, 28, 31, 32.1, 33, 39; ФЗ «Об образовании в РФ» от 29.12.2012 № 273-ФЗ, ст. 34, 75, 84; акты о персонифицированном финансировании дополнительного образования; порядок оказания медпомощи лицам, занимающимся физкультурой и спортом.',
     ],
-    related: ['besplatnye-kruzhki-i-razvitie', 'nasilie-nyanya-repetitor-trener', 'detskiy-otdyh-i-besplatnye-putyovki', 'shkolnyy-stress', 'vybor-professii'],
+    related: ['besplatnye-kruzhki-i-razvitie', 'nasilie-nyanya-repetitor-trener', 'detskiy-otdyh-i-besplatnye-putyovki', 'shkolnyy-stress', 'vybor-professii', 'priroda-i-aktivnyy-otdyh'],
   },
 
   {

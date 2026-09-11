@@ -170,7 +170,7 @@ export const TOPICS_PSIHIKA = [
     ],
     contacts: ['psy-podrostok', 'deti-doverie'],
     sources: ['ФЗ «Об основах охраны здоровья граждан в РФ», ст. 20, 22, 54; ФЗ «О психиатрической помощи…», ст. 26, 27.'],
-    related: ['suicidalnye-signaly', 'selfharm', 'shkolnyy-stress', 'gore-i-poterya'],
+    related: ['suicidalnye-signaly', 'selfharm', 'shkolnyy-stress', 'gore-i-poterya', 'muzyka-tvorchestvo-emocii'],
   },
 
   {
@@ -399,7 +399,7 @@ export const TOPICS_PSIHIKA = [
     ],
     contacts: ['deti-doverie', 'psy-podrostok'],
     sources: ['Конвенция ООН о правах ребёнка, ст. 31.'],
-    related: ['depressiya-podrostka', 'destruktivnye-soobshchestva', 'travlya-rebenok-molchit', 'suicidalnye-signaly'],
+    related: ['depressiya-podrostka', 'destruktivnye-soobshchestva', 'travlya-rebenok-molchit', 'suicidalnye-signaly', 'zhivotnye-i-rebenok'],
   },
 
   {
@@ -462,7 +462,7 @@ export const TOPICS_PSIHIKA = [
     ],
     contacts: ['deti-doverie', 'psy-podrostok', 'policiya-102', 'ekstrennye-112', 'fsb'],
     sources: ['УК РФ, ст. 30, 37, 105, 112, 115, 116, 119, 128.1, 137, 163, 205.2, 207, 242.1; КоАП РФ, ст. 6.1.1.'],
-    related: ['skulshuting-signaly', 'travlya-rebenok-molchit', 'risk-i-otnoshenie-k-zhizni', 'chto-takoe-dusha', 'suicidalnye-signaly'],
+    related: ['skulshuting-signaly', 'travlya-rebenok-molchit', 'risk-i-otnoshenie-k-zhizni', 'chto-takoe-dusha', 'suicidalnye-signaly', 'muzyka-tvorchestvo-emocii'],
   },
 
   {
@@ -530,7 +530,7 @@ export const TOPICS_PSIHIKA = [
     sources: [
       'ФЗ «Об образовании в РФ» от 29.12.2012 № 273-ФЗ, ст. 34, 41, 42; СанПиН СП 2.4.3648-20; СанПиН 1.2.3685-21.',
     ],
-    related: ['strahi-i-trevozhnost', 'depressiya-podrostka', 'suicidalnye-signaly', 'ekzameny-oge-ege', 'son-podrostka'],
+    related: ['strahi-i-trevozhnost', 'depressiya-podrostka', 'suicidalnye-signaly', 'ekzameny-oge-ege', 'son-podrostka', 'priroda-i-aktivnyy-otdyh'],
   },
 
   {
@@ -601,7 +601,7 @@ export const TOPICS_PSIHIKA = [
     sources: [
       'Закон РФ «О психиатрической помощи и гарантиях прав граждан при её оказании» от 02.07.1992 № 3185-1, ст. 4, 7, 9, 26, 27; ФЗ «Об основах охраны здоровья граждан в РФ» от 21.11.2011 № 323-ФЗ, ст. 13, 20, 70.',
     ],
-    related: ['depressiya-podrostka', 'shkolnyy-stress', 'psihiatriya-mify', 'selfharm', 'suicidalnye-signaly'],
+    related: ['depressiya-podrostka', 'shkolnyy-stress', 'psihiatriya-mify', 'selfharm', 'suicidalnye-signaly', 'muzyka-tvorchestvo-emocii'],
   },
 
   {
@@ -668,6 +668,6 @@ export const TOPICS_PSIHIKA = [
     sources: [
       'Рекомендации детских и подростковых психологов по разграничению апатии, выгорания и депрессии; ФЗ «Об основах охраны здоровья граждан в РФ» № 323-ФЗ (право на медицинскую и психологическую помощь).',
     ],
-    related: ['depressiya-podrostka', 'shkolnyy-stress', 'zavisimost-ot-gadzhetov-i-igr', 'suicidalnye-signaly'],
+    related: ['depressiya-podrostka', 'shkolnyy-stress', 'zavisimost-ot-gadzhetov-i-igr', 'suicidalnye-signaly', 'mechty-i-celi-rebenka'],
   },
 ]
