@@ -255,6 +255,15 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="robot
   }
 })()
 </script>
+<script>
+// Размер текста — сохранённая настройка (кнопки A-/A+ в шапке, см. nav.js).
+// Применяем тут же, в <head>, до отрисовки — иначе был бы заметный «скачок»
+// размера сразу после загрузки страницы.
+try {
+  var kdFs = localStorage.getItem('kd_font_scale')
+  if (kdFs) document.documentElement.style.setProperty('--fs', kdFs)
+} catch (e) {}
+</script>
 ${ld}
 </head>
 <body class="${bodyClass}"${accent ? ` style="--sec:${accent}"` : ''}${dataAttrs}>
@@ -288,6 +297,10 @@ ${ld}
     </details>
     <a class="logo" href="/"><img class="logo-mark" src="/favicon.svg" alt="" width="24" height="24"><span>${esc(SITE.name)}</span></a>
     <div class="head-actions">
+      <div class="fs-ctl" role="group" aria-label="Размер текста">
+        <button type="button" class="fs-btn" data-fs-step="-0.1" aria-label="Уменьшить размер текста" title="Уменьшить размер текста">A</button>
+        <button type="button" class="fs-btn fs-btn-big" data-fs-step="0.1" aria-label="Увеличить размер текста" title="Увеличить размер текста">A</button>
+      </div>
       <button type="button" class="reload-btn" data-reload aria-label="Обновить страницу и сбросить кэш" title="Обновить: сбросить кэш и перезагрузить эту страницу">↻</button>
       <a class="help-btn" href="/pomoshch/" aria-label="Помощь сейчас"><span class="help-btn-i" aria-hidden="true">🆘</span><span class="help-btn-t">Помощь сейчас</span></a>
     </div>
@@ -422,10 +435,10 @@ function renderHome() {
   </div>
 </section>
 <section class="home-stats" aria-label="Масштаб проекта">
-  <div class="stat"><b>${TOPICS.length}</b><span>разобранных тем</span></div>
-  <div class="stat"><b>${SECTIONS.length}</b><span>разделов</span></div>
-  <div class="stat"><b>${CONTACTS.length}</b><span>федеральных контактов</span></div>
-  <div class="stat"><b>${REGIONS.length}</b><span>регионов</span></div>
+  <a class="stat" href="/poisk/"><b>${TOPICS.length}</b><span>разобранных тем</span></a>
+  <a class="stat" href="#razdely"><b>${SECTIONS.length}</b><span>разделов</span></a>
+  <a class="stat" href="/kontakty/"><b>${CONTACTS.length}</b><span>федеральных контактов</span></a>
+  <a class="stat" href="/regiony/"><b>${REGIONS.length}</b><span>регионов</span></a>
 </section>
 <section class="home-search-box" aria-label="Поиск по ситуации">
   <h2>🔎 Найдите свою ситуацию</h2>
@@ -441,7 +454,7 @@ function renderHome() {
     (s) => `<a class="sec-chip" href="${sectionUrl(s)}" style="--sec:${s.accent}"><span class="sec-chip-i">${sectionIconSvg(s.id, 16)}</span><span>${esc(s.title)}</span><span class="sec-chip-n">${topicsOfSection(s.id).length}</span></a>`,
   ).join('')}
 </nav>
-<h2 class="sec-h">Разделы — подробно</h2>
+<h2 class="sec-h" id="razdely">Разделы — подробно</h2>
 <ul class="sec-list">${sectionsHtml}</ul>
 <script src="/assets/search.js${V}" defer></script>
 <section class="resp-note">

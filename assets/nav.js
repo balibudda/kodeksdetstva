@@ -412,4 +412,21 @@
       location.reload()
     })
   })
+
+  // Размер текста A-/A+: множитель --fs на <html>, шаг 0.1 в пределах 0.8–1.4.
+  // Запоминается в localStorage и применяется сразу при заходе на любую
+  // страницу (см. ранний инлайн-скрипт в <head> в scripts/build.mjs —
+  // он же не даёт «скачка» размера до появления этого файла).
+  var FS_KEY = 'kd_font_scale'
+  var FS_MIN = 0.8
+  var FS_MAX = 1.4
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-fs-step]')
+    if (!btn) return
+    var step = parseFloat(btn.getAttribute('data-fs-step'))
+    var cur = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fs')) || 1
+    var next = Math.min(FS_MAX, Math.max(FS_MIN, Math.round((cur + step) * 10) / 10))
+    document.documentElement.style.setProperty('--fs', next)
+    try { localStorage.setItem(FS_KEY, next) } catch (err) {}
+  })
 })()
