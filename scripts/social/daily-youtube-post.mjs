@@ -16,6 +16,7 @@ import { TOPICS } from '../../content/index.mjs'
 import { renderTopicVideo } from './generate-video-topic.mjs'
 import { postToYoutube } from './post-youtube.mjs'
 import { postToFacebook } from './post-facebook.mjs'
+import { postToTiktok } from './post-tiktok.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..', '..')
@@ -40,7 +41,7 @@ async function postOneTopic(topic, { dryRun, outDir }) {
 
   if (dryRun) {
     console.log('--dry-run: публикацию пропускаю.')
-    return { slug: topic.slug, youtube: null, facebook: null }
+    return { slug: topic.slug, youtube: null, facebook: null, tiktok: null }
   }
 
   const ytResult = await postToYoutube(rendered)
@@ -58,7 +59,21 @@ async function postOneTopic(topic, { dryRun, outDir }) {
     console.log('Facebook: FB_PAGE_ID/FB_PAGE_TOKEN не заданы — пропускаю.')
   }
 
-  return { slug: topic.slug, youtube: ytResult, facebook: fbResult }
+  // TikTok тоже (15.09.2026, Ник: «посмотрим что смотреть будут больше») —
+  // общий аккаунт @kodeksrazuma, черновиком, тот же принцип, что уже
+  // подключён к вечернему комедийному формату.
+  let tiktokResult = null
+  if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN) {
+    try {
+      tiktokResult = await postToTiktok(rendered)
+    } catch (e) {
+      console.warn('TikTok: публикация не удалась —', e.message)
+    }
+  } else {
+    console.log('TikTok: TIKTOK_* секреты не заданы — пропускаю.')
+  }
+
+  return { slug: topic.slug, youtube: ytResult, facebook: fbResult, tiktok: tiktokResult }
 }
 
 async function main() {
