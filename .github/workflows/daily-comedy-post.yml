@@ -1,0 +1,99 @@
+name: Вечерний комедийный ролик в соцсети
+
+# НОВЫЙ формат (14.09.2026, по просьбе Ника после отзыва друга и одобрения
+# пилота с Совёнком) — отдельно от утреннего "Ежедневный пост темы в
+# соцсети" (daily-youtube-post.yml, тот не трогаем). Каждый вечер — один
+# короткий комедийный ролик с персонажем-ведущим Совёнок, на новую, ещё не
+# использованную в этом формате тему (без повторов —
+# scripts/social/posted-comedy.json). Первый прогон (пустая очередь)
+# использует уже одобренный Ником пилотный сценарий по умолчанию — см.
+# generate-comedy-short.mjs.
+
+on:
+  schedule:
+    - cron: '35 12 * * *' # ~19:35 Bangkok (UTC+7) — сдвинуто на 5 мин от kodeksdeneg, чтобы не толкались за раннер
+  workflow_dispatch: {}
+
+concurrency:
+  group: daily-comedy-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  write-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Прочитай и полностью выполни инструкции из файла
+            instructions/comedy-script-prompt.md в корне этого
+            репозитория — это вся сегодняшняя задача. Если очередь
+            (scripts/social/posted-comedy.json) пуста или не существует —
+            ничего не делай (пилотный сценарий возьмётся по умолчанию).
+          claude_args: |
+            --allowedTools "Read,Write,Bash,Glob,Grep"
+            --max-turns 40
+
+      - name: Закоммитить сгенерированный сценарий (если написан)
+        run: |
+          git config user.name "kodeksdetstva-comedy-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/social/comedy-script.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Сценарий не создан (пустая очередь или уже всё) — коммит не нужен"
+            exit 0
+          fi
+          git commit -m "ci: сценарий для вечернего комедийного ролика"
+          git pull --rebase origin main
+          git push origin main
+
+  post:
+    needs: write-script
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install ffmpeg (полный, с drawtext) и шрифты
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Сгенерировать и опубликовать комедийный ролик
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GH_ASSETS_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }}
+        run: node scripts/social/daily-comedy-post.mjs
+
+      - name: Закоммитить обновлённый трекер и удаление одноразового сценария
+        run: |
+          git config user.name "kodeksdetstva-comedy-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/social/posted-comedy.json
+          git rm --cached --ignore-unmatch scripts/social/comedy-script.json > /dev/null
+          if git diff --cached --quiet; then
+            echo "Ничего не изменилось — коммит не нужен"
+            exit 0
+          fi
+          git commit -m "ci: отметить комедийную тему опубликованной"
+          git pull --rebase origin main
+          git push origin main

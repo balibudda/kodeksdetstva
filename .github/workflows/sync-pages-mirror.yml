@@ -1,0 +1,48 @@
+name: Sync GitHub Pages mirror
+
+# Реальный трафик kodeksdetstva.ru идёт через Cloudflare DNS на GitHub Pages
+# отдельного репозитория balibudda/kodeksdetstva-web (обход блокировки Vercel IP в РФ),
+# а не напрямую на Vercel. Этот workflow держит зеркало актуальным при каждом пуше в main.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout kodeksdetstva
+        uses: actions/checkout@v4
+
+      - name: Build dist/
+        run: |
+          node scripts/gen-icons.mjs
+          node scripts/gen-og.mjs
+          node scripts/build.mjs
+
+      - name: Checkout kodeksdetstva-web mirror
+        uses: actions/checkout@v4
+        with:
+          repository: balibudda/kodeksdetstva-web
+          token: ${{ secrets.MIRROR_PUSH_TOKEN }}
+          path: mirror
+
+      - name: Sync dist/ into mirror (preserving CNAME)
+        run: |
+          find mirror -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'CNAME' -exec rm -rf {} +
+          cp -R dist/. mirror/
+
+      - name: Commit and push mirror
+        working-directory: mirror
+        run: |
+          git config user.name "kodeksdetstva-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Зеркало уже актуально, коммит не нужен"
+            exit 0
+          fi
+          git commit -m "Автосинхронизация с main@${{ github.sha }}"
+          git push origin main

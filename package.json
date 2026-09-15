@@ -1,0 +1,27 @@
+{
+  "name": "kodeksdetstva",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Кодекс детства — справочник для родителей и подростков: права ребёнка, безопасность, насилие и травля, психика, здоровье, детдом и усыновление, закон. Многостраничный статический сайт: одна проблема — одна HTML-страница.",
+  "scripts": {
+    "icons": "node scripts/gen-icons.mjs",
+    "og": "node scripts/gen-og.mjs",
+    "assets": "node scripts/gen-icons.mjs && node scripts/gen-tg-banner.mjs && node scripts/gen-og.mjs",
+    "build": "node scripts/gen-icons.mjs && node scripts/gen-og.mjs && node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "max:webhook": "node scripts/max-set-webhook.mjs"
+  },
+  "dependencies": {
+    "@maxhub/max-bot-api": "^0.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1",
+    "playwright": "^1.61.0"
+  }
+}

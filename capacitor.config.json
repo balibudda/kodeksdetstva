@@ -1,0 +1,8 @@
+{
+  "appId": "ru.kodeksdetstva.app",
+  "appName": "Кодекс детства",
+  "webDir": "dist",
+  "server": {
+    "html5mode": false
+  }
+}

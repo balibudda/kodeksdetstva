@@ -1,0 +1,19 @@
+name: Vercel deployment cleanup (daily)
+
+on:
+  schedule:
+    - cron: '35 2 * * *' # ~09:35 Bangkok
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-deployment-cleanup
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove deployments with no active alias
+        run: npx vercel@latest remove kodeksdetstva --safe --yes --token="$VERCEL_TOKEN" --scope=bali-budda-s-projects
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

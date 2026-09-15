@@ -1,0 +1,68 @@
+name: Ежедневный пост темы на YouTube
+
+# Берёт следующие 3 ещё не опубликованные темы сайта (по очереди, без
+# повторов — scripts/social/posted-youtube.json) и публикует про каждую
+# видео-ролик на YouTube (@kodeksdetstva) + Facebook (страница «Кодекс
+# Детства»). 3 темы за прогон — Ник, 13.09.2026: «каждый день три
+# новости». Формат подтверждён Ником 13.09.2026 — реальный скриншот
+# страницы темы + голос + синхронные подписи, длинный текст поста.
+# Публикуется утром по Бангкоку.
+
+on:
+  schedule:
+    - cron: '30 0 * * *' # ~07:30 Bangkok (UTC+7)
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Конкретная тема (slug) вместо очереди — необязательно
+        required: false
+
+concurrency:
+  group: daily-youtube-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Сгенерировать и опубликовать ролик
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GH_ASSETS_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }}
+        run: |
+          node scripts/social/daily-youtube-post.mjs ${{ github.event.inputs.slug && format('--slug={0}', github.event.inputs.slug) || '' }}
+
+      - name: Закоммитить обновлённый трекер опубликованных тем
+        run: |
+          git config user.name "kodeksdetstva-social-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/social/posted-youtube.json
+          if git diff --cached --quiet; then
+            echo "Трекер не изменился — коммит не нужен"
+            exit 0
+          fi
+          git commit -m "ci: отметить тему опубликованной на YouTube"
+          git pull --rebase origin main
+          git push origin main

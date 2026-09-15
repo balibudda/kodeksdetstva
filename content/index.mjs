@@ -1,0 +1,82 @@
+// Точка сборки всего контента.
+
+import { SECTIONS, SECTIONS_BY_ID } from './sections.mjs'
+import { CONTACTS, CONTACTS_BY_ID } from './contacts.mjs'
+import { REGIONS, REGIONS_BY_ID } from './regions.mjs'
+
+import { TOPICS_LICHNOST } from './topics/lichnost.mjs'
+import { TOPICS_RADOST_DETSTVA } from './topics/radost-detstva.mjs'
+import { TOPICS_SEMYA } from './topics/semya.mjs'
+import { TOPICS_SEMEYNYE_DELA } from './topics/semeynye-dela.mjs'
+import { TOPICS_SIROTSTVO } from './topics/sirotstvo.mjs'
+import { TOPICS_RAZVOD } from './topics/razvod.mjs'
+import { TOPICS_BEZOPASNOST } from './topics/bezopasnost.mjs'
+import { TOPICS_CIFRA } from './topics/cifra.mjs'
+import { TOPICS_TRAVLYA } from './topics/travlya.mjs'
+import { TOPICS_PRAVA_SHKOLA } from './topics/prava-shkola.mjs'
+import { TOPICS_PODROSTOK_ZAKON } from './topics/podrostok-i-zakon.mjs'
+import { TOPICS_VOSPITANIE } from './topics/vospitanie.mjs'
+import { TOPICS_PSIHIKA } from './topics/psihika.mjs'
+import { TOPICS_ZDOROVIE } from './topics/zdorovie.mjs'
+import { TOPICS_PERVAYA_LYUBOV } from './topics/pervaya-lyubov.mjs'
+
+/** @type {import('./topics/lichnost.mjs').Topic[]} */
+export const TOPICS = [
+  ...TOPICS_LICHNOST,
+  ...TOPICS_RADOST_DETSTVA,
+  ...TOPICS_SEMYA,
+  ...TOPICS_SEMEYNYE_DELA,
+  ...TOPICS_SIROTSTVO,
+  ...TOPICS_RAZVOD,
+  ...TOPICS_BEZOPASNOST,
+  ...TOPICS_CIFRA,
+  ...TOPICS_TRAVLYA,
+  ...TOPICS_PRAVA_SHKOLA,
+  ...TOPICS_PODROSTOK_ZAKON,
+  ...TOPICS_VOSPITANIE,
+  ...TOPICS_PSIHIKA,
+  ...TOPICS_ZDOROVIE,
+  ...TOPICS_PERVAYA_LYUBOV,
+]
+
+export const TOPICS_BY_SLUG = Object.fromEntries(TOPICS.map((t) => [t.slug, t]))
+
+export function topicUrl(topic) {
+  const section = SECTIONS_BY_ID[topic.sectionId]
+  return `/${section.slug}/${topic.slug}/`
+}
+
+export function sectionUrl(section) {
+  return `/${section.slug}/`
+}
+
+export function regionUrl(region) {
+  return `/regiony/${region.slug}/`
+}
+
+export function topicsOfSection(sectionId) {
+  return TOPICS.filter((t) => t.sectionId === sectionId)
+}
+
+// Проверки целостности контента — падаем на сборке, если что-то не сходится.
+export function validateContent() {
+  const errors = []
+  const slugs = new Set()
+  for (const t of TOPICS) {
+    if (!SECTIONS_BY_ID[t.sectionId]) errors.push(`Тема "${t.slug}": неизвестный sectionId "${t.sectionId}"`)
+    if (slugs.has(t.slug)) errors.push(`Дублирующийся slug темы: "${t.slug}"`)
+    slugs.add(t.slug)
+    for (const c of t.contacts || []) {
+      if (!CONTACTS_BY_ID[c]) errors.push(`Тема "${t.slug}": неизвестный контакт "${c}"`)
+    }
+  }
+  const regionSlugs = new Set()
+  for (const r of REGIONS) {
+    if (!r.slug) errors.push(`Регион "${r.id}": нет slug`)
+    if (regionSlugs.has(r.slug)) errors.push(`Дублирующийся slug региона: "${r.slug}"`)
+    regionSlugs.add(r.slug)
+  }
+  return errors
+}
+
+export { SECTIONS, SECTIONS_BY_ID, CONTACTS, CONTACTS_BY_ID, REGIONS, REGIONS_BY_ID }
