@@ -21,6 +21,7 @@ import { fileURLToPath } from 'node:url'
 import { renderComedyVideo, PILOT } from './generate-comedy-short.mjs'
 import { postToFacebook } from './post-facebook.mjs'
 import { postToYoutube } from './post-youtube.mjs'
+import { postToTiktok } from './post-tiktok.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..', '..')
@@ -92,6 +93,19 @@ async function main() {
     console.log('Facebook: FB_PAGE_ID/FB_PAGE_TOKEN не заданы — пропускаю.')
   }
 
+  // Общий на оба проекта TikTok-аккаунт @kodeksrazuma (15.09.2026, по
+  // просьбе Ника — не заводить отдельный аккаунт на каждый сайт).
+  let tiktokResult = null
+  if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN) {
+    try {
+      tiktokResult = await postToTiktok(rendered)
+    } catch (e) {
+      console.warn('TikTok: публикация не удалась —', e.message)
+    }
+  } else {
+    console.log('TikTok: TIKTOK_* секреты не заданы — пропускаю.')
+  }
+
   posted.push(scriptData.slug)
   await savePosted(posted)
 
@@ -99,7 +113,7 @@ async function main() {
     await rm(SCRIPT_PATH, { force: true }) // одноразовый файл, не коммитим его в git
   }
 
-  console.log('\n' + JSON.stringify({ slug: scriptData.slug, youtube: ytResult, facebook: fbResult }, null, 2))
+  console.log('\n' + JSON.stringify({ slug: scriptData.slug, youtube: ytResult, facebook: fbResult, tiktok: tiktokResult }, null, 2))
 }
 
 main().catch((e) => {

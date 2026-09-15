@@ -82,6 +82,10 @@ jobs:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           GH_ASSETS_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }} # нужен post-tiktok.mjs, чтобы самому обновлять ротирующийся TIKTOK_REFRESH_TOKEN в обоих репозиториях (общий аккаунт @kodeksrazuma)
         run: node scripts/social/daily-comedy-post.mjs
 
       - name: Закоммитить обновлённый трекер и удаление одноразового сценария
