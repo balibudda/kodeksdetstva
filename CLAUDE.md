@@ -413,7 +413,29 @@ touched. Full story/root-cause writeup lives in nikolablajen-app's own
 CLAUDE.md (search "Vercel Deployment Storage crisis") since that's where
 it was diagnosed — not duplicated here.
 
-## Реальный трафик идёт не на Vercel, а через Cloudflare → GitHub Pages зеркало (обнаружено/починено 13.09.2026)
+## СУПЕРСЕДЕНО 16.09.2026 — сайт переехал прямо на VPS, Cloudflare/GitHub Pages больше не в цепочке
+
+**Раздел ниже (13.09.2026) устарел.** Параллельная сессия Claude Code
+16.09.2026 перенесла `kodeksdetstva.ru` (и `kodeksdeneg.ru`, и
+`nikolablajen.ru`, и `remeslohobby.ru`) на один и тот же Beget VPS в
+Санкт-Петербурге (`45.147.176.231`, SSH-доступ — `~/Desktop/sync.py`,
+брать свежий пароль оттуда). Проверено вживую (16.09.2026, другая
+сессия): `curl -sI https://kodeksdetstva.ru/` отдаёт `Server: nginx`, без
+`cf-ray`/`server: cloudflare` — Cloudflare больше не в пути, DNS
+резолвится прямо на VPS. nginx отдаёт статику напрямую из
+`/var/www/kodeksdetstva.ru/` (`try_files ...`), TLS через Certbot.
+
+**Реальный, непочиненный риск: обновление на VPS ручное, автоматики
+нет.** На сервере нет ни `.git`, ни cron, ни systemd-таймера для этого
+каталога — файлы туда просто разово скопированы (последний раз
+16.09.2026 03:55 UTC). Тот же класс проблемы, что уже чинили ниже для
+GitHub Pages зеркала — теперь заново, с новым транспортом. Ежедневные
+воркфлоу (новости, комедийные ролики) по-прежнему коммитят в GitHub, но
+ничто не переносит эти коммиты на VPS. Если сайт снова «не
+обновляется» — проверять это первым. Нужен rsync/git pull+сборка по
+крону или webhook — не сделано, требует отдельного решения Ника.
+
+## УСТАРЕЛО (было верно до 16.09.2026) — Реальный трафик шёл не на Vercel, а через Cloudflare → GitHub Pages зеркало (обнаружено/починено 13.09.2026)
 
 DNS `kodeksdetstva.ru` переключён на Cloudflare (другая, параллельная сессия
 Claude Code сделала это ещё 12.09 как обход блокировки Vercel IP в РФ) —
