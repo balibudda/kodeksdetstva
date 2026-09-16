@@ -1,0 +1,27 @@
+name: TMP — проверить восстановление доступа Facebook
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Тестовый пост и сразу удаление
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          RES=$(curl -s -X POST "https://graph.facebook.com/v21.0/${FB_PAGE_ID}/feed" \
+            --data-urlencode "message=тест доступа, удалится сразу" \
+            --data-urlencode "access_token=${FB_PAGE_TOKEN}")
+          echo "$RES"
+          POST_ID=$(echo "$RES" | grep -o '"id":"[^"]*"' | sed 's/"id":"//;s/"//')
+          if [ -z "$POST_ID" ]; then
+            echo "::error::пост не создан — доступ ещё не восстановлен"
+            exit 1
+          fi
+          echo "✓ пост создан: $POST_ID — удаляю"
+          curl -s -X DELETE "https://graph.facebook.com/v21.0/${POST_ID}?access_token=${FB_PAGE_TOKEN}"
+          echo ""
+          echo "✓ доступ подтверждён, тестовый пост удалён"
