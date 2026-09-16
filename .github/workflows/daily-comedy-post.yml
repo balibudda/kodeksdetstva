@@ -68,7 +68,15 @@ jobs:
     needs: write-script
     runs-on: ubuntu-latest
     steps:
+      # ref: main обязателен — без него checkout берёт github.sha (коммит,
+      # запустивший workflow), а не текущий HEAD ветки, и не видит
+      # comedy-script.json, который write-script только что запушил.
+      # Найдено 16.09.2026 (тот же баг, что и в kodeksdeneg) — вечерний
+      # ролик молча брал старый PILOT вместо реально сгенерированного
+      # сценария на новую тему.
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
