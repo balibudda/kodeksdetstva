@@ -436,16 +436,17 @@ node scripts/build.mjs
 rsync -a --delete dist/ /var/www/kodeksdetstva.ru/
 ```
 В root-crontab стоит `*/10 * * * * /usr/local/bin/deploy-kodeksdetstva.sh`
-(лог — `/var/log/deploy-kodeksdetstva.log`). Проверено, что крон реально
-тикает и корректно видит «нет изменений» на каждом холостом прогоне
-(`no changes (<hash>)` каждые 10 минут в логе). **Сквозной тест
-«пуш нового коммита → крон сам его подтягивает и деплоит» вживую
-проводился на kodeksdeneg (тот же паттерн, тот же скрипт, тот же
-сервер) 16.09.2026 и подтверждён успешно** — на kodeksdetstva
-отдельно не гонялся, но механизм идентичен один-в-один, риска
-расхождения нет. Если сайт снова «не обновляется» — первым делом
-смотреть `/var/log/deploy-kodeksdetstva.log` на VPS (не Vercel и не
-GitHub Pages).
+(лог — `/var/log/deploy-kodeksdetstva.log`). **Проверено сквозным
+тестом 16.09.2026** (тот же паттерн, что и на kodeksdeneg): тестовый
+коммит (`CLAUDE.md`+`STATUS.md`) запушен в `main` → следующий тик крона
+сам подтянул его (`git pull --ff-only`), пересобрал
+(`node scripts/build.mjs`) и разлил в `/var/www/kodeksdetstva.ru/` —
+лог подтвердил `deployed 39f8183…→ 6e2cf89…` в 14:40:03 UTC, папка
+раздачи обновилась в ту же секунду, `git log` на сервере — на том же
+хэше. Вся цепочка **git push → cron (до 10 мин) → сборка → живой
+сайт** подтверждена рабочей end-to-end. Если сайт снова «не
+обновляется» — первым делом смотреть `/var/log/deploy-kodeksdetstva.log`
+на VPS (не Vercel и не GitHub Pages).
 
 ## УСТАРЕЛО (было верно до 16.09.2026) — Реальный трафик шёл не на Vercel, а через Cloudflare → GitHub Pages зеркало (обнаружено/починено 13.09.2026)
 
