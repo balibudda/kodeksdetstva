@@ -42,7 +42,16 @@ jobs:
             --max-turns 40
 
       - name: Закоммитить сгенерированный сценарий (если написан)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          # claude-code-action сам перенастраивает git-аутентификацию под
+          # себя и оставляет репозиторий с битым/удалённым credential-
+          # хедером — обычный push после этого падает с "Invalid username
+          # or token" (найдено 15-16.09.2026 на kodeksdeneg, тот же
+          # паттерн здесь). Восстанавливаем аутентификацию явно перед
+          # любым git-действием.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           git config user.name "kodeksdetstva-comedy-bot"
           git config user.email "actions@users.noreply.github.com"
           git add scripts/social/comedy-script.json 2>/dev/null || true
