@@ -40,8 +40,22 @@ export async function postToYoutube({ video, caption, meta }) {
   if (title.length > 100) title = title.slice(0, 96) + '…'
 
   const linkLine = metaJson.moreUrl && !captionText.includes(metaJson.moreUrl) ? `\n\nСтатья на сайте: ${metaJson.moreUrl}` : ''
-  const withLink = captionText + linkLine
-  const description = /#shorts/i.test(withLink) ? withLink : `${withLink}\n\n#Shorts`
+  const shortsTag = /#shorts/i.test(captionText + linkLine) ? '' : '\n\n#Shorts'
+  const suffix = linkLine + shortsTag
+  // YouTube отклоняет описание длиннее 5000 символов (invalidDescription) —
+  // раньше не резалось вообще; нашли 16.09.2026 на теме с особенно длинным
+  // содержанием (реальные 5041 симв. упали с 400). Режем середину текста,
+  // всегда сохраняя ссылку/тег в конце.
+  const YT_DESCRIPTION_LIMIT = 5000
+  let descBody = captionText
+  if (descBody.length + suffix.length > YT_DESCRIPTION_LIMIT) {
+    const budget = YT_DESCRIPTION_LIMIT - suffix.length - 1
+    descBody = descBody.slice(0, budget)
+    const lastBreak = descBody.lastIndexOf('\n\n')
+    if (lastBreak > budget * 0.5) descBody = descBody.slice(0, lastBreak)
+    descBody = descBody.trimEnd() + '…'
+  }
+  const description = descBody + suffix
 
   const token = await accessToken()
 
