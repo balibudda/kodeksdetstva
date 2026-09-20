@@ -1,0 +1,27 @@
+name: YouTube delete video (one-off cleanup)
+
+on:
+  workflow_dispatch:
+    inputs:
+      videoId:
+        description: 'YouTube video id to delete'
+        required: true
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Delete video
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: node scripts/social/yt-delete-video.mjs "${{ github.event.inputs.videoId }}"
