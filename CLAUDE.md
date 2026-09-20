@@ -36,8 +36,11 @@ keystore и его пароль как и раньше живут вне git, э
   (`api/tg.js`) на `bot.*`, скорее всего, тоже (`getWebhookInfo` не
   проверялся). Починка — серверный код на самом VPS на основном домене
   (запланировано вместе с платным разбором) либо вернуть `bot.*` в DNS Beget.
-- **Устаревшее:** `sync-pages-mirror.yml` (зеркало GitHub Pages) на живой сайт
-  больше не влияет.
+- **Убрано 20.09.2026:** workflow `sync-pages-mirror.yml` (зеркало GitHub
+  Pages) удалён, на живой сайт он не влиял. Репозиторий-зеркало
+  `kodeksdetstva-web` и секрет `MIRROR_PUSH_TOKEN` остались, но не
+  используются. Редиректы из `vercel.json` на VPS не работают (для старых
+  адресов переехавших тем не проверялось, скорее всего 404).
 - **TikTok отключён 20.09.2026** (ноль просмотров): в скриптах постинга вызов
   идёт только при `TIKTOK_ENABLED=1` в env workflow, по умолчанию выключено.
   `post-tiktok.mjs` и секреты `TIKTOK_*` оставлены, включить обратно можно
@@ -437,9 +440,9 @@ touched. Full story/root-cause writeup lives in nikolablajen-app's own
 CLAUDE.md (search "Vercel Deployment Storage crisis") since that's where
 it was diagnosed — not duplicated here.
 
-## СУПЕРСЕДЕНО 16.09.2026 — сайт переехал прямо на VPS, Cloudflare/GitHub Pages больше не в цепочке
+## Хостинг: сайт прямо на VPS с 16.09.2026 (Cloudflare и GitHub Pages больше не в цепочке)
 
-**Раздел ниже (13.09.2026) устарел.** Параллельная сессия Claude Code
+Параллельная сессия Claude Code
 16.09.2026 перенесла `kodeksdetstva.ru` (и `kodeksdeneg.ru`, и
 `nikolablajen.ru`, и `remeslohobby.ru`) на один и тот же Beget VPS в
 Санкт-Петербурге (`45.147.176.231`, SSH только по ключу —
@@ -486,31 +489,6 @@ rsync -a --delete dist/ /var/www/kodeksdetstva.ru/
 CLAUDE.md kodeksdeneg, том же разделе с этим заголовком** — не
 дублирую здесь целиком, конфиг общий на VPS, чинилось одним и тем же
 патчем для обоих доменов.
-
-## УСТАРЕЛО (было верно до 16.09.2026) — Реальный трафик шёл не на Vercel, а через Cloudflare → GitHub Pages зеркало (обнаружено/починено 13.09.2026)
-
-DNS `kodeksdetstva.ru` переключён на Cloudflare (другая, параллельная сессия
-Claude Code сделала это ещё 12.09 как обход блокировки Vercel IP в РФ) —
-Cloudflare проксирует на **GitHub Pages отдельного публичного репозитория
-`balibudda/kodeksdetstva-web`** («зеркало, независимое от Vercel»), не на
-Vercel. Vercel по-прежнему собирается на каждый пуш и был бы актуален — но
-почти никто из реальных посетителей его не видит, раз DNS ведёт в другое
-место. **Если сайт выглядит «не обновился» — сначала проверять зеркало, не
-Vercel** (`curl -sI https://kodeksdetstva.ru/` → заголовки `x-github-request-id`/
-`via: 1.1 varnish` подтверждают GitHub Pages, а не Vercel).
-
-Нашли и почини две реальные проблемы с этим зеркалом:
-1. **Зеркало было опубликовано один раз и никогда не обновлялось.** Добавлен
-   `.github/workflows/sync-pages-mirror.yml` (в основном репозитории) — при
-   каждом пуше в `main` сам собирает `dist/` и пушит его в
-   `kodeksdetstva-web` (сохраняя `CNAME`, которого `build.mjs` сам не
-   генерирует). Токен для кросс-репо пуша — секрет `MIRROR_PUSH_TOKEN` в
-   этом репозитории.
-2. **У `kodeksdetstva-web` тип сборки GitHub Pages был `workflow`, а не
-   `legacy`** — из-за этого пуши в `main` вообще не триггерили пересборку
-   сайта (`gh api -X PUT repos/balibudda/kodeksdetstva-web/pages -f
-   build_type=legacy` — исправлено). С `legacy` пуш в `main` сам собирает
-   сайт, как и у `kodeksdeneg-web` (тот же паттерн для сайта-брата).
 
 ## Плашка «актуально на месяц» на главной (13.09.2026)
 
