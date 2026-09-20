@@ -1,0 +1,31 @@
+name: YouTube re-authorize (print URL / exchange code)
+
+on:
+  workflow_dispatch:
+    inputs:
+      code:
+        description: 'Leave empty to print the auth URL; paste the code=... value after authorizing to exchange it'
+        required: false
+
+jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run yt-authorize
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+        run: |
+          if [ -n "${{ github.event.inputs.code }}" ]; then
+            node scripts/social/yt-authorize.mjs --code="${{ github.event.inputs.code }}"
+          else
+            node scripts/social/yt-authorize.mjs
+          fi
