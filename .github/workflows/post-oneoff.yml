@@ -1,0 +1,45 @@
+name: Post one-off video (YouTube + Facebook)
+
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: 'Path to the video file (relative to repo root)'
+        required: true
+      caption:
+        description: 'Path to the caption text file'
+        required: true
+      meta:
+        description: 'Path to the meta.json file'
+        required: true
+
+concurrency:
+  group: post-oneoff-${{ github.event.inputs.video }}
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - name: Post to YouTube
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: node scripts/social/post-youtube.mjs --video="${{ github.event.inputs.video }}" --caption="${{ github.event.inputs.caption }}" --meta="${{ github.event.inputs.meta }}"
+
+      - name: Post to Facebook
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GH_ASSETS_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }}
+        run: node scripts/social/post-facebook.mjs --video="${{ github.event.inputs.video }}" --caption="${{ github.event.inputs.caption }}" --meta="${{ github.event.inputs.meta }}"
