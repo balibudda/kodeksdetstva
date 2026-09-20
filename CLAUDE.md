@@ -27,7 +27,7 @@ keystore и его пароль как и раньше живут вне git, э
   служебном файле на компьютере Ника — в репозиторий их и пути к ним не
   писать). Vercel сайт **не** обслуживает, зеркало GitHub Pages/Cloudflare
   неактуально.
-- **Деплой:** `git push` в `main` → cron на VPS (каждые 10 минут) →
+- **Деплой:** `git push` в `main` → cron на VPS (каждые 10 минут, **от непривилегированного пользователя `deploy`**, не root; файл `/etc/cron.d/kodeks-deploy`, с 20.09.2026) →
   `node scripts/build.mjs` → раздача. Лог — `/var/log/deploy-kodeksdetstva.log` на VPS.
 - **DNS:** домен на серверах имён Beget, в зоне только основной адрес → VPS.
   Поддомена `bot.kodeksdetstva.ru` в DNS **нет** (проверено 20.09.2026 через 1.1.1.1
@@ -464,7 +464,7 @@ git pull --ff-only origin main
 node scripts/build.mjs
 rsync -a --delete dist/ /var/www/kodeksdetstva.ru/
 ```
-В root-crontab стоит `*/10 * * * * /usr/local/bin/deploy-kodeksdetstva.sh`
+В `/etc/cron.d/kodeks-deploy` (пользователь `deploy`, не root — так с 20.09.2026; git-клон и веб-корень тоже принадлежат `deploy`) стоит `*/10 * * * * /usr/local/bin/deploy-kodeksdetstva.sh`
 (лог — `/var/log/deploy-kodeksdetstva.log`). **Проверено сквозным
 тестом 16.09.2026** (тот же паттерн, что и на kodeksdeneg): тестовый
 коммит (`CLAUDE.md`+`STATUS.md`) запушен в `main` → следующий тик крона
