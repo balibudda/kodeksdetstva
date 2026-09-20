@@ -96,14 +96,14 @@ async function main() {
   // Общий на оба проекта TikTok-аккаунт @kodeksrazuma (15.09.2026, по
   // просьбе Ника — не заводить отдельный аккаунт на каждый сайт).
   let tiktokResult = null
-  if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN) {
+  if (process.env.TIKTOK_ENABLED === '1' && process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN) {
     try {
       tiktokResult = await postToTiktok(rendered)
     } catch (e) {
       console.warn('TikTok: публикация не удалась —', e.message)
     }
   } else {
-    console.log('TikTok: TIKTOK_* секреты не заданы — пропускаю.')
+    console.log('TikTok: отключён (TIKTOK_ENABLED не равен 1) или секреты не заданы — пропускаю.')
   }
 
   posted.push(scriptData.slug)

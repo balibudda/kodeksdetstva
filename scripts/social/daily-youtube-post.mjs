@@ -78,14 +78,14 @@ async function postOneTopic(topic, { dryRun, outDir, comedyScript }) {
   // общий аккаунт @kodeksrazuma, черновиком, тот же принцип, что уже
   // подключён к вечернему комедийному формату.
   let tiktokResult = null
-  if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN) {
+  if (process.env.TIKTOK_ENABLED === '1' && process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN) {
     try {
       tiktokResult = await postToTiktok(rendered)
     } catch (e) {
       console.warn('TikTok: публикация не удалась —', e.message)
     }
   } else {
-    console.log('TikTok: TIKTOK_* секреты не заданы — пропускаю.')
+    console.log('TikTok: отключён (TIKTOK_ENABLED не равен 1) или секреты не заданы — пропускаю.')
   }
 
   return { slug: topic.slug, youtube: ytResult, facebook: fbResult, tiktok: tiktokResult }
