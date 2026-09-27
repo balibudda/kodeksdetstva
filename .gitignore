@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+dist-social
+dist-social-test
+dist-social-comedy
+*.local
+.DS_Store
+.env
+.env.*
+.vercel
+.idea
+*.tsbuildinfo
+audit-report.md
+audit-title.txt

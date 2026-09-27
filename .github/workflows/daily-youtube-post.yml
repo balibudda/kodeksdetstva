@@ -1,0 +1,132 @@
+name: Ежедневный пост темы на YouTube
+
+# Берёт следующие 3 ещё не опубликованные темы сайта (по очереди, без
+# повторов — scripts/social/posted-youtube.json) и публикует про каждую
+# видео-ролик на YouTube (@kodeksdetstva) + Facebook (страница «Кодекс
+# Детства») + TikTok (@kodeksrazuma). 3 темы за прогон — Ник, 13.09.2026:
+# «каждый день три новости».
+#
+# 16.09.2026, по просьбе Ника: из этих 3 тем 2 теперь в комедийном
+# формате Совёнка (тот же движок, что у вечернего пайплайна), третья —
+# как раньше, обычным форматом (реальный скриншот страницы + начитка
+# сути). write-morning-scripts пишет сценарии для первых двух
+# неопубликованных тем; post сам решает по наличию сценария, каким
+# форматом рендерить каждую из трёх.
+
+on:
+  schedule:
+    - cron: '30 0 * * *' # ~07:30 Bangkok (UTC+7)
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Конкретная тема (slug) вместо очереди — необязательно
+        required: false
+
+concurrency:
+  group: daily-youtube-post
+  cancel-in-progress: false
+
+jobs:
+  write-morning-scripts:
+    if: ${{ github.event.inputs.slug == '' || github.event.inputs.slug == null }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Прочитай и полностью выполни инструкции из файла
+            instructions/morning-comedy-script-prompt.md в корне этого
+            репозитория — это вся сегодняшняя задача.
+          claude_args: |
+            --allowedTools "Read,Write,Bash,Glob,Grep"
+            --max-turns 60
+
+      - name: Закоммитить сгенерированные сценарии (если написаны)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # claude-code-action сам перенастраивает git-аутентификацию под
+          # себя и оставляет репозиторий с битым credential-хедером для
+          # следующего шага — обычный push после этого падает с "Invalid
+          # username or token" (найдено 15-16.09.2026 на вечернем
+          # пайплайне). Восстанавливаем аутентификацию явно перед любым
+          # git-действием.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git config user.name "kodeksdetstva-social-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/social/morning-comedy-scripts.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Сценарии не создан(ы) — коммит не нужен"
+            exit 0
+          fi
+          git commit -m "ci: комедийные сценарии для утренних тем"
+          git pull --rebase origin main
+          git push origin main
+
+  post:
+    needs: write-morning-scripts
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # ref: main обязателен — без него checkout берёт github.sha (коммит,
+      # запустивший workflow), а не текущий HEAD ветки, и не увидит
+      # morning-comedy-scripts.json, который write-morning-scripts только
+      # что запушил (тот же баг, что нашли и исправили в вечернем
+      # пайплайне 16.09.2026).
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Сгенерировать и опубликовать ролик
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GH_ASSETS_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }} # нужен post-tiktok.mjs, чтобы самому обновлять ротирующийся TIKTOK_REFRESH_TOKEN в обоих репозиториях (общий аккаунт @kodeksrazuma)
+        run: |
+          node scripts/social/daily-youtube-post.mjs ${{ github.event.inputs.slug && format('--slug={0}', github.event.inputs.slug) || '' }}
+
+      - name: Закоммитить обновлённый трекер опубликованных тем
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git config user.name "kodeksdetstva-social-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/social/posted-youtube.json
+          git rm --cached --ignore-unmatch scripts/social/morning-comedy-scripts.json > /dev/null
+          if git diff --cached --quiet; then
+            echo "Трекер не изменился — коммит не нужен"
+            exit 0
+          fi
+          git commit -m "ci: отметить тему опубликованной на YouTube"
+          git pull --rebase origin main
+          git push origin main

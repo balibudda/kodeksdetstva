@@ -1,0 +1,27 @@
+name: YouTube whoami (verify a candidate refresh token before trusting it)
+
+on:
+  workflow_dispatch:
+    inputs:
+      refreshToken:
+        description: 'Candidate refresh_token to check (not saved anywhere)'
+        required: true
+
+jobs:
+  whoami:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check channel
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN_CANDIDATE: ${{ github.event.inputs.refreshToken }}
+        run: node scripts/social/yt-whoami.mjs
